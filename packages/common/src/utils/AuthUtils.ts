@@ -1,7 +1,7 @@
 import { RegexUtils } from "./RegexUtils";
-import { LoginUserRequest, RegisterUserRequest } from "../api/requests/auth.request.types";
+import { LoginUserRequest, RegisterUserRequest } from "../api/requests/auth";
 
-export type TRegistrationFields = RegisterUserRequest["ReqBody"] & { passwordReEnter: string };
+export type TRegistrationFields = RegisterUserRequest.Request["ReqBody"] & { passwordReEnter: string };
 // type of registration data passed in to validation function
 export type TAllRegistrationFields = {[key in keyof TRegistrationFields]: string};
 // this needs to be it's own type so we can include the passwords not matching as an input err
@@ -16,7 +16,7 @@ export const registrationFieldsConstraints: { [key in keyof Required<TRegistrati
     phone: { required: false, errMsg: "Please provide a valid phone number." },
 }
 
-export type TLoginFields = LoginUserRequest["ReqBody"];
+export type TLoginFields = LoginUserRequest.Request["ReqBody"];
 export const loginFieldConstraints: { [key in keyof Required<TLoginFields>]: { errMsg: string; } } = {
     email: { errMsg: "Please provide an email." },
     password: { errMsg: "Please provide a password." }

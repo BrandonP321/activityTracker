@@ -1,5 +1,5 @@
 import { IUserDocument, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TToFullUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.d";
-import { RegisterUserErrors, RegisterUserErrResponse } from "@activitytracker/common/src/api/requests/auth.request.types";
+import { RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import bcrypt from "bcrypt";
 import { ValidErrRes } from "~Utils/ControllerUtils";
 import { JWTUtils } from "~Utils/JWTUtils";
@@ -50,7 +50,7 @@ export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) 
     }
 }
 
-export type IUserDocSaveErr = ValidErrRes<RegisterUserErrResponse["response"]> | undefined
+export type IUserDocSaveErr = ValidErrRes<RegisterUserRequest.ErrResponse> | undefined
 
 export const handleUserDocSaveErr = async function(err: { code?: number; [key: string]: any } & Error, doc: IUserDocument, next: (err: any) => void) {
     let errObj: IUserDocSaveErr = undefined;
@@ -60,9 +60,9 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
         const errField = Object.keys(err.keyValue)[0]
         if (errField === "email" || errField === "username") {
             const errMsg = `An account with this ${errField} already exists.`;
-            errObj = { error: RegisterUserErrors.EmailOrUsernameTaken, credTaken: errField, errMsg }
+            errObj = RegisterUserErrors.Errors.EmailOrUsernameTaken({ credTaken: errField, errorMsg: errMsg })
         } else {
-            errObj = { error: RegisterUserErrors.UnexpectedCondition }
+            errObj = RegisterUserErrors.Errors.UnexpectedCondition();
         }
     } else if (err instanceof mongoose.Error.ValidationError) {
         // validation of a property failed and we know it's not due to a duplicate key
@@ -74,7 +74,7 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
                     case "required":
                     case "regexp":
                         if (errKey === "username" || errKey === "email") {
-                            errObj = { error: RegisterUserErrors.InvalidUserInput, field: errKey, errMsg: `Please provide a valid ${errKey}.` }
+                            errObj = RegisterUserErrors.Errors.InvalidUserInput({ field: errKey, errMsg: `Please provide a valid ${errKey}.` });
                             break;
                         }
                 }
@@ -92,7 +92,7 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
     }
 
     if (!errObj) {
-        errObj = { error: RegisterUserErrors.UnexpectedCondition }
+        errObj = RegisterUserErrors.Errors.UnexpectedCondition();
     }
 
     next(errObj)
