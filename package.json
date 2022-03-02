@@ -3,7 +3,14 @@
   "packageManager": "yarn@3.2.0",
   "private": true,
   "scripts": {
-    "web": "yarn workspace @activitytracker/web"
+    "web": "yarn workspace @activitytracker/web",
+    "server": "yarn workspace @activitytracker/server",
+    "common": "yarn workspace @activitytracker/common",
+    "web:client:start": "yarn web start",
+    "server:start": "yarn server start",
+    "config:update": "yarn common config:update",
+    "web:startx": "concurrently --kill-others-on-fail -n \"COMMON,SERVER,WEB\" -c \"yellow,magenta,cyan\" \"yarn config:update\" \"\" \"\"",
+    "web:start": "yarn config:update && concurrently --kill-others-on-fail -n \"SERVER,WEB\" -c \"magenta,cyan\" \"yarn server:start\" \"yarn web:client:start\""
   },
   "workspaces": [
     "packages/*"
