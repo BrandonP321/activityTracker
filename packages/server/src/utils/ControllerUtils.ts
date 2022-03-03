@@ -1,4 +1,4 @@
-import { RequestErrors } from "@activitytracker/common/src/api/requests/RequestErrors";
+import { BaseRequestErrors } from "@activitytracker/common/src/api/requests";
 import { ServerErrorStatusCodes } from "@activitytracker/common/src/api/requests/StatusCodes";
 import type { Response } from "express";
 
@@ -22,8 +22,8 @@ export class ControllerUtils {
     }
 
     /* responsed to http request with 500 error for an unexpected server error */
-    public static respondWithUnexpectedErr(res: Response) {
-        this.respondWithErr({ status: ServerErrorStatusCodes.InternalServerError, error: RequestErrors.UnexpectedCondition }, res);
+    public static respondWithUnexpectedErr(res: Response, errMsg?: string) {
+        this.respondWithErr(BaseRequestErrors.UnexpectedCondition(errMsg ? { errMsg } : undefined), res);
     }
 }
 
