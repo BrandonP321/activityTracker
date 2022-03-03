@@ -1,6 +1,6 @@
 import { ControllerUtils } from "./ControllerUtils";
 import jwt from "jsonwebtoken";
-import { EnvUtils, EnvVars } from "@activitytracker/common/src/utils/EnvUtils";
+import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
 import type { Request, Response } from "express";
 
 type IVerifiedTokenResponse = ({
@@ -15,7 +15,7 @@ type IVerifiedTokenResponse = ({
 
 export class JWTUtils {
     private static signToken(userId: string, isRefreshToken: boolean, hash: string, expiresIn?: string) {
-        const tokenSecret = EnvUtils.getEnvVar(isRefreshToken ? EnvVars.REFRESH_TOKEN_SECRET : EnvVars.ACCESS_TOKEN_SECRET);
+        const tokenSecret = EnvUtils.getEnvVar(isRefreshToken ? ServerEnvVars.REFRESH_TOKEN_SECRET : ServerEnvVars.ACCESS_TOKEN_SECRET);
 
         if (!tokenSecret) {
             console.error("Error getting SECRET Env Variable");
@@ -81,13 +81,13 @@ export class JWTUtils {
     }
 
     public static verifyAccessToken(token: string | null) {
-        const ACCESS_TOKEN_SECRET = EnvUtils.getEnvVar(EnvVars.ACCESS_TOKEN_SECRET);
+        const ACCESS_TOKEN_SECRET = EnvUtils.getEnvVar(ServerEnvVars.ACCESS_TOKEN_SECRET);
 
         return this.verifyToken(token, ACCESS_TOKEN_SECRET);
     }
 
     public static verifyRefreshToken(token: string | null) {
-        const REFRESH_TOKEN_SECRET = EnvUtils.getEnvVar(EnvVars.REFRESH_TOKEN_SECRET);
+        const REFRESH_TOKEN_SECRET = EnvUtils.getEnvVar(ServerEnvVars.REFRESH_TOKEN_SECRET);
 
         return this.verifyToken(token, REFRESH_TOKEN_SECRET);
     }

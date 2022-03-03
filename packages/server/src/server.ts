@@ -1,16 +1,15 @@
 import dotenv from "dotenv";
-import { EnvUtils, EnvVars } from "@activitytracker/common/src/utils/EnvUtils";
+import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
 import express from "express";
 
-// .env must be configured before importing other modules that use .env
-dotenv.config({ path: EnvUtils.getEnvFilePath() ?? "../.env" });
+dotenv.config();
 
 import { createServer } from "http"
 import { connectToMongoDb } from "~Models";
 import { configureApp } from "~Middleware/appConfiguration";
 import { configureRoutes } from "./routes";
 
-const PORT = EnvUtils.getEnvVar(EnvVars.PORT, "8000");
+const PORT = EnvUtils.getEnvVar(ServerEnvVars.PORT, "8000");
 
 export const app = express();
 const httpServer = createServer(app);
