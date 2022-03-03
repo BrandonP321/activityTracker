@@ -1,0 +1,1 @@
+{"WebConfig":{"enabled":true},"ConnectionSettings":{"enabled":true,"ClientAPIUrlString":{"value":"http://localhost:8000","enabled":true}},"JWTSettings":{"enabled":true,"AccessTokenExpirationTime":{"value":"1","enabled":true}},"ServerConfig":{"enabled":true},"Master":{"enabled":true}}

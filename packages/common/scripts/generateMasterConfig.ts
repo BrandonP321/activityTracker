@@ -85,7 +85,7 @@ const validateSystemOrParamName = (name: string, currentMasterConfig: { [key: st
 const generateConfigJsonFile = (configObj: { [key: string]: any }, env: ValidParamOverrides) => {
     const json = JSON.stringify(configObj);
     try {
-        fs.writeFileSync(`${__dirname}/../codegen/MasterConfig.${env}.json`, json)
+        fs.writeFileSync(`${__dirname}\\..\\src\\config\\codegen\\MasterConfig.${env}.json`, json)
         console.log("\u001b[" + 93 + "m" + `${env.toUpperCase()} MASTER CONFIG BUILD SUCCESSFUL` + "\u001b[0m")
     } catch (e) {
         console.error(e);
