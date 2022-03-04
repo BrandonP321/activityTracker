@@ -18,7 +18,6 @@ export interface IUserMethods {
     validatePassword: TValidatePassword;
     generateAccessToken: TGenerateAccessToken;
     generateRefreshToken: TGenerateRefreshToken;
-    toAuthJSON: TToAuthJSON;
     toShallowUserJSON: TToShallowUserJSON;
     toFullUserJSON: TToFullUserJSON;
 }
@@ -49,7 +48,6 @@ export interface IUserFullResponse extends Omit<IUser, "password" | "_id" | "jwt
 export type TValidatePassword = (password: string) => Promise<boolean>;
 export type TGenerateAccessToken = (hash: string, expiresIn: string) => string | undefined;
 export type TGenerateRefreshToken = (hash: string) => string | undefined;
-export type TToAuthJSON = () => Promise<IUserShallowResponse>;
 export type TToShallowUserJSON = () => Promise<IUserShallowResponse>;
 export type TToFullUserJSON = () => Promise<IUserFullResponse>;
 // export type TPopulateChats = () => Promise<TToShallowChatJSONResponse[]>;

@@ -1,5 +1,5 @@
 import { LoginUserRequest, RegisterUserRequest } from "../requests/auth";
-import { UserSearchRequest } from "../requests/user.types";
+import { GetUserRequest } from "../requests/user/userRequests.types";
 
 /**
  * URL params but be identical to those in the request type in the
@@ -13,8 +13,8 @@ export const AuthRoutes = {
 
 export const UserRoutes = {
     // GetAllUsers: (params?: GetAllUsersRequest["UrlParams"]) => "/api/user/all",
-    // GetUser: (params?: GetUserRequest["UrlParams"]) => `/api/user/${params?.id ?? ":id"}`,
-    UserSearch: (params?: UserSearchRequest["UrlParams"]) => `/api/user/search`
+    GetUser: (params?: GetUserRequest.Request["UrlParams"]) => `/api/user/${params?.id ?? ":id"}`,
+    // UserSearch: (params?: UserSearchRequest["UrlParams"]) => `/api/user/search`
 }
 
 

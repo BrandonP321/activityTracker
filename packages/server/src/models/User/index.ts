@@ -1,7 +1,7 @@
-import mongoose, { NativeError, Schema as ISchema, Model, Mongoose, Error, ErrorHandlingMiddlewareFunction } from "mongoose";
+import mongoose, { NativeError, Schema as ISchema } from "mongoose";
 import bcrypt from "bcrypt";
-import { RegexUtils } from "@activitytracker/common/src/utils";
-import type { IUser, IUserDocument, IUserModel } from "@activitytracker/common/src/api/models/User.d";
+import { RegexUtils } from "@activitytracker/common/src/utils/RegexUtils";
+import type { IUser, IUserDocument, IUserMethods, IUserModel } from "@activitytracker/common/src/api/models/User.d";
 import { generateAccessToken, generateRefreshToken, handleUserDocSaveErr, toFullUserJSON, toShallowUserJSON, validatePassword } from "./userMethods";
 
 const { Schema } = mongoose;
@@ -68,14 +68,15 @@ UserSchema.pre("save", async function save(next) {
 /* handles any errors when new User document can't be created */
 UserSchema.post("save", handleUserDocSaveErr);
 
-/* compare given password to encrypted password */
-UserSchema.methods.validatePassword = validatePassword;
+const userMethods: typeof UserSchema.methods & IUserMethods = {
+    ...UserSchema.methods,
+    validatePassword,
+    generateAccessToken,
+    generateRefreshToken,
+    toShallowUserJSON,
+    toFullUserJSON,
+}
 
-/* generate a web token for a given user */
-UserSchema.methods.generateAccessToken = generateAccessToken;
-UserSchema.methods.generateRefreshToken = generateRefreshToken;
-
-UserSchema.methods.toShallowUserJSON = toShallowUserJSON;
-UserSchema.methods.toFullUserJSON = toFullUserJSON;
+UserSchema.methods = userMethods;
 
 export const User = mongoose.model<IUserDocument, IUserModel>("User", UserSchema)

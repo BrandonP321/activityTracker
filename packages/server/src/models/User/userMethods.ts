@@ -1,4 +1,4 @@
-import { IUserDocument, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TToFullUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.d";
+import { IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TToFullUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.d";
 import { RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import bcrypt from "bcrypt";
 import { ValidErrRes } from "~Utils/ControllerUtils";
@@ -37,17 +37,18 @@ export const toShallowUserJSON: TToShallowUserJSON = async function(this: IUserM
 }
 
 export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) {
-    const {
-        _id,
-        password,
-        jwtHash,
-        ...rest
-    } = this
-
-    return {
-        ...rest,
-        id: _id.toString()
+    const userJSON: IUserFullResponse = {
+        createdAt: this.createdAt,
+        email: this.email,
+        fullName: this.fullName,
+        id: this._id.toString(),
+        phone: this.phone,
+        profileImg: this.profileImg,
+        updatedAt: this.updatedAt,
+        username: this.username
     }
+
+    return userJSON;
 }
 
 export type IUserDocSaveErr = ValidErrRes<RegisterUserRequest.ErrResponse> | undefined
