@@ -3,10 +3,10 @@
  */
 import { EnvUtils } from "../utils/EnvUtils";
 
-import liveConfig from "../../codegen/MasterConfig.live.json";
-import devConfig from "../../codegen/MasterConfig.dev.json";
-import stageConfig from "../../codegen/MasterConfig.stage.json";
-import localConfig from "../../codegen/MasterConfig.local.json";
+import liveConfig from "./codegen/MasterConfig.live.json";
+import devConfig from "./codegen/MasterConfig.dev.json";
+import stageConfig from "./codegen/MasterConfig.stage.json";
+import localConfig from "./codegen/MasterConfig.local.json";
 
 type ValidConfig = typeof localConfig;
 
