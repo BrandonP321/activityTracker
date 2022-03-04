@@ -7,7 +7,7 @@ export const BaseRequestErrorCodes = {
 } as const;
 
 export const BaseRequestErrors = {
-    UnexpectedCondition: () => ({
+    UnexpectedCondition: (params?: { errMsg: string; }) => ({
         status: ServerErrorStatusCodes.InternalServerError,
         error: RequestErrors.UnexpectedCondition,
     }),

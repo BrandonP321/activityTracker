@@ -1,6 +1,8 @@
+import { ConfigUtils } from "./ConfigUtils";
+import { MasterConfig } from "../config";
+
 export class APIUtils {
     public static getApiDomain = () => {
-        // TODO: update this return value with value from config or env
-        return "http://10.0.0.170:8000";
+        return ConfigUtils.getParam(MasterConfig.ConnectionSettings.ClientAPIUrlString, "./env");
     }
 }

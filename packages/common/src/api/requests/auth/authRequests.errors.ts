@@ -15,13 +15,13 @@ export namespace RegisterUserErrors {
         ...BaseRequestErrors,
         InvalidUserInput: (params?: { field: string; errMsg: string; }) => ({
             status: ClientErrorStatusCodes.NotFound,
-            error: RequestErrors.InvalidUserCredentialInput,
+            error: ErrorCodes.InvalidUserInput,
             errorMsg: params?.errMsg ?? "",
             field: params?.field ?? "",
         }),
         EmailOrUsernameTaken: (params?: { errorMsg: string; credTaken: "email" | "username"; }) => ({
             status: ClientErrorStatusCodes.BadRequest,
-            error: RequestErrors.InvalidUserCredentialInput,
+            error: ErrorCodes.EmailOrUsernameTaken,
             errorMsg: params?.errorMsg ?? "",
             credTaken: params?.credTaken ?? ""
         })

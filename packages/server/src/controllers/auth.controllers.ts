@@ -5,14 +5,14 @@ import mongoose, { CallbackError, NativeError } from "mongoose";
 import { IUser, IUserDocument } from "@activitytracker/common/src/api/models/User.d";
 import { RouteController } from "./index";
 import bcrypt from "bcrypt";
-import { EnvUtils, EnvVars } from "@activitytracker/common/src/utils/EnvUtils";
+import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
 import { AuthUtils } from "@activitytracker/common/src/utils/AuthUtils";
 import { IUserDocSaveErr } from "~Models/User/userMethods";
 import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils"
 import { MasterConfig } from "@activitytracker/common/src/config"
 import { Response } from "express"
 
-const SECRET = EnvUtils.getEnvVar(EnvVars.SECRET, "");
+const SECRET = EnvUtils.getEnvVar(ServerEnvVars.SECRET, "");
 
 export const RegisterUserController: RouteController<RegisterUserRequest.Request, {}> = async (req, res) => {
     const { email, fullName, password, passwordReEnter, phone, username } = req.body;
@@ -89,13 +89,27 @@ export const LoginUserController: RouteController<LoginUserRequest.Request, {}> 
 
         return res.json({
             ...userJSON
-        }).end();
+        }).send().end();
     })
 }
 
 const createTokenCookies = (user: IUserDocument, hash: string, res: Response) => {
     const accessToken = user.generateAccessToken(hash, JWTExpirationTime);
     const refreshToken = user.generateRefreshToken(hash);
+
+    const tokens = {
+        accessToken, refreshToken
+    }
+
+    res.cookie("siteTokens", JSON.stringify(tokens), {
+        // forces use of https in production
+        secure: !EnvUtils.isLocal,
+        // makes tokens inaccessible in client's javascript
+        httpOnly: true,
+        maxAge: 24 * 60 * 60
+    })
+
+    return tokens;
 }
 
 const generateRandomHash = async () => {
