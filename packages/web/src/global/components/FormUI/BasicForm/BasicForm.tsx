@@ -50,7 +50,7 @@ export default function BasicForm(props: BasicFormProps) {
     const getOrderedFields = () => {
         return fieldsOrder.map(f => fields[f] && {...fields[f], name: f});
     }
-    
+
     const [orderedFields] = useState(getOrderedFields());
 
     /* constrcuts object of field names with empty string values */
@@ -77,7 +77,6 @@ export default function BasicForm(props: BasicFormProps) {
     const handleInputChange = (value: string, field: string) => {
         setValues({...values, [field]: value});
     }
-
 
     const fieldClasses: InputFieldProps["classes"] = {
         inputField: classNames(fieldProps?.classes?.inputField, styles.inputField),

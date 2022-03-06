@@ -1,0 +1,21 @@
+@import "../../../styles/uiBase.scss";
+
+.login {
+
+    .loginFormWrapper {
+        width: 40rem;
+        margin: 10rem auto;
+        padding: 3rem;
+        border-radius: 2rem;
+    }
+
+    .formToggleLink {
+        text-align: center;
+        color: blue;
+        margin-top: 1rem;
+        
+        span {
+            cursor: pointer;
+        }
+    }
+}
