@@ -26,5 +26,11 @@
         "helmet": "^5.0.2",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.2.4"
+    },
+    "nodemonConfig": {
+        "watch": [
+            "src",
+            "../common/src"
+        ]
     }
 }
