@@ -1,0 +1,99 @@
+@import "../../../../styles/uiBase.scss";
+
+$formShadowColor: rgba(237, 237, 237, 1);
+
+.formWrapper {
+    position: relative;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 7rem 2.5rem $formShadowColor;
+}
+
+.formTitle {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.form {
+
+}
+
+.generalErr {
+    font-size: 1rem;
+    color: red;
+    text-align: center;
+    margin-bottom: .5rem;
+}
+
+.submitBtnWrapper {
+
+}
+
+.submitBtn {
+
+}
+
+.inputField {
+}
+
+.fieldOuterWrapper {
+    margin-bottom: 1rem;
+    
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.fieldWrapper {
+}
+
+.loadingOverlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, .3);
+    border-radius: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .5s;
+
+    &.loading {
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+.spinner {
+    animation: Spin 2s linear infinite;
+    font-size: 3rem;
+    --fa-primary-color: red;
+    --fa-secondary-color: black;
+    --fa-primary-opacity: 1;
+    --fa-secondary-opacity: .6;
+}
+
+@keyframes Spin {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes ShowOverlay {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 100%;
+    }
+}

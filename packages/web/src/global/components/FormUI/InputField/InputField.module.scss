@@ -1,0 +1,60 @@
+@import "../../../../styles/uiBase.scss";
+
+$inputLeftPadding: .75rem;
+$inputBorderColor: rgb(194, 194, 194);
+
+.inputContentWrapper {
+
+}
+
+.inputFieldWrapper {
+    position: relative;
+    border: 2px solid $inputBorderColor;
+    border-radius: .5rem;
+    transition: all .2s;
+
+    &.focused {
+        border-color: black;
+
+        .placeholder {
+            top: 0;
+            font-size: 1rem;
+            line-height: 1.5rem;
+            color: rgb(58, 58, 58);
+        }
+    }
+}
+
+.inputField,
+.placeholder {
+    font-size: 1.5rem;
+}
+
+.inputField {
+    position: relative;
+    width: 100%;
+    padding: $inputLeftPadding .5rem;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.placeholder {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-left: $inputLeftPadding;
+    background-color: white;
+    border-radius: inherit;
+    transform: translateY(-50%);
+    color: $inputBorderColor;
+    z-index: 2;
+    pointer-events: none;
+    transition: all .2s;
+}
+
+.fieldErr {
+    font-size: .9rem;
+    color: red;
+}
