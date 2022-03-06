@@ -51,7 +51,7 @@ export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) 
     return userJSON;
 }
 
-export type IUserDocSaveErr = ValidErrRes<RegisterUserRequest.ErrResponse> | undefined
+export type IUserDocSaveErr = ValidErrRes<RegisterUserRequest.ErrResponse["response"]["data"]> | undefined
 
 export const handleUserDocSaveErr = async function(err: { code?: number; [key: string]: any } & Error, doc: IUserDocument, next: (err: any) => void) {
     let errObj: IUserDocSaveErr = undefined;

@@ -1,3 +1,4 @@
+import { APIErrResponse } from "..";
 import { IUserShallowResponse } from "../../models/User";
 import { LoginUserErrors, RegisterUserErrors } from "./authRequests.errors";
 
@@ -22,7 +23,7 @@ export namespace RegisterUserRequest {
         }
     }
     
-    export type ErrResponse = ReturnType<typeof RegisterUserErrors.Errors[keyof typeof RegisterUserErrors.Errors]>;
+    export type ErrResponse = APIErrResponse<typeof RegisterUserErrors.Errors>;
 }
 
 export namespace LoginUserRequest {
@@ -42,5 +43,6 @@ export namespace LoginUserRequest {
         }
     }
 
-    export type ErrResponse = ReturnType<typeof LoginUserErrors.Errors[keyof typeof LoginUserErrors.Errors]>;
+    // export type ErrResponse = ReturnType<typeof LoginUserErrors.Errors[keyof typeof LoginUserErrors.Errors]>;
+    export type ErrResponse = APIErrResponse<typeof LoginUserErrors.Errors>;
 }

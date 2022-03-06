@@ -7,8 +7,8 @@ export namespace RegisterUserErrors {
     export const ErrorCodes = {
         ...BaseRequestErrorCodes,
         /* field input from user does not meet constraints for that field */
-        InvalidUserInput: RequestErrors.InvalidUserInput,
-        EmailOrUsernameTaken: RequestErrors.UniqueFieldTaken,
+        InvalidUserInput: "InvalidUserInput",
+        EmailOrUsernameTaken: "EmailOrUsernameTaken",
     } as const;
     
     export const Errors = {
@@ -40,12 +40,12 @@ export namespace LoginUserErrors {
         ...BaseRequestErrors,
         IncorrectEmailOrPassword: (params?: {}) => ({
             status: ClientErrorStatusCodes.NotFound,
-            error: RequestErrors.InvalidUserCredentialInput,
+            error: ErrorCodes.IncorrectEmailOrPassword,
             errorMsg: "incorrect email or password.",
         }),
         MissingUserInput: (params?: { errorMsg: string; field: string; }) => ({
             status: ClientErrorStatusCodes.BadRequest,
-            error: RequestErrors.InvalidUserCredentialInput,
+            error: ErrorCodes.MissingUserInput,
             errorMsg: params?.errorMsg ?? "",
             field: params?.field ?? ""
         })

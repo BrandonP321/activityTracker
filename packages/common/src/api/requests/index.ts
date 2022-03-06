@@ -2,6 +2,12 @@ import { AxiosResponse } from "axios";
 import { RequestErrors } from "./RequestErrors";
 import { ServerErrorStatusCodes } from "./StatusCodes";
 
+export type APIErrResponse<T extends { [key: string]: any }> = {
+    response: {
+        data: ReturnType<T[keyof T]>;
+    }
+}
+
 export const BaseRequestErrorCodes = {
     UnexpectedCondition: "UnexpectedCondition",
 } as const;
