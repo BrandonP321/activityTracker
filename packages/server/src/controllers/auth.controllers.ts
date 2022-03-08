@@ -11,6 +11,7 @@ import { IUserDocSaveErr } from "~Models/User/userMethods";
 import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils"
 import { MasterConfig } from "@activitytracker/common/src/config"
 import { Response } from "express"
+import { createTokenCookies, generateRandomHash } from "~Middleware/authJWT.middleware";
 
 const SECRET = EnvUtils.getEnvVar(ServerEnvVars.SECRET, "");
 
@@ -47,9 +48,7 @@ export const RegisterUserController: RouteController<RegisterUserRequest.Request
 
         const userJSON = await user.toShallowUserJSON()
 
-        res.json({
-            ...userJSON
-        }).end();
+        res.json(userJSON).end();
     })
 }
 
@@ -91,29 +90,6 @@ export const LoginUserController: RouteController<LoginUserRequest.Request, {}> 
             ...userJSON
         }).send().end();
     })
-}
-
-const createTokenCookies = (user: IUserDocument, hash: string, res: Response) => {
-    const accessToken = user.generateAccessToken(hash, JWTExpirationTime);
-    const refreshToken = user.generateRefreshToken(hash);
-
-    const tokens = {
-        accessToken, refreshToken
-    }
-
-    res.cookie("siteTokens", JSON.stringify(tokens), {
-        // forces use of https in production
-        secure: !EnvUtils.isLocal,
-        // makes tokens inaccessible in client's javascript
-        httpOnly: true,
-        maxAge: 24 * 60 * 60
-    })
-
-    return tokens;
-}
-
-const generateRandomHash = async () => {
-    return await bcrypt.hash(SECRET, 10)
 }
 
 const JWTExpirationTime = ConfigUtils.getParam(MasterConfig.JWTSettings.AccessTokenExpirationTime, "1000")

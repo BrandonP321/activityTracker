@@ -10,12 +10,17 @@ export type APIErrResponse<T extends { [key: string]: any }> = {
 
 export const BaseRequestErrorCodes = {
     UnexpectedCondition: "UnexpectedCondition",
+    UserMustReAuth: "UserMustReAuth",
 } as const;
 
 export const BaseRequestErrors = {
     UnexpectedCondition: (params?: { errMsg: string; }) => ({
         status: ServerErrorStatusCodes.InternalServerError,
         error: RequestErrors.UnexpectedCondition,
+    }),
+    UserMustReAuth: (params?: {}) => ({
+        status: ServerErrorStatusCodes.InternalServerError,
+        error: BaseRequestErrorCodes.UserMustReAuth,
     }),
 }
 

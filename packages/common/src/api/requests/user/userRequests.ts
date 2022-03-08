@@ -6,7 +6,7 @@ import { GetUserRequest } from "./userRequests.types";
 
 const APIDomain = APIUtils.getApiDomain();
 
-export const GetUser: APIRequest<GetUserRequest.Request> = (urlParams, bodyParams) => {
+export const GetUser: APIRequest<GetUserRequest.Request> = (urlParams, bodyParams, headers) => {
     return axios.get(`${APIDomain}${Routes.GetUser(urlParams)}`, {withCredentials: true})
 }
 

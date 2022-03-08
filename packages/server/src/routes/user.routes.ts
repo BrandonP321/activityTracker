@@ -5,6 +5,6 @@ import { authenticateJWT } from "~Middleware/authJWT.middleware";
 
 const router = express.Router();
 
-router.get(Routes.GetUser(), GetUserController);
+router.get(Routes.GetUser(), authenticateJWT, GetUserController);
 
 export default router;

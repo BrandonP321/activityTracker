@@ -1,5 +1,5 @@
 import { ControllerUtils } from "./ControllerUtils";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
 import type { Request, Response } from "express";
 
@@ -100,5 +100,20 @@ export class JWTUtils {
         const token = req.headers.authorization?.split(" ")[1];
 
         return token;
+    }
+
+    public static getTokenFromCookie(req: Request): { accessToken: string; refreshToken: string } | undefined {
+        try {
+            const cookie = JSON.parse(req.cookies?.siteTokens);
+        
+            if (cookie) {
+                return {
+                    accessToken: cookie.accessToken,
+                    refreshToken: cookie.refreshToken
+                }
+            }
+        } catch (err) {
+            return undefined
+        }
     }
 }
