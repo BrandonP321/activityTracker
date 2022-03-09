@@ -1,0 +1,8 @@
+@mixin sectionHeadingFont() {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+@mixin normalFont() {
+    font-size: 1.2rem;
+}

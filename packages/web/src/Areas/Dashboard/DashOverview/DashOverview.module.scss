@@ -1,0 +1,173 @@
+@import "../../../styles/uiBase.scss";
+
+$listLeftPadding: 2rem;
+
+@mixin quickStatColors($color) {
+    background-color: rgba($color, .2);
+        
+    &:hover {
+        background-color: rgba($color, .35);
+    }
+
+    .hexagonIcon {
+        color: $color;
+    }
+}
+
+.dashOverviewWrapper {
+
+}
+
+.sectionHeading {
+    @include sectionHeadingFont();
+}
+
+.quickStatsWrapper {
+    display: flex;
+    margin: 0 auto $sectionSpacing auto;
+    justify-content: space-between;
+}
+
+.quickStat {
+    position: relative;
+    width: calc(25% - 1rem);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-right: 2rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color .2s;
+
+    &:last-child {
+        margin-right: 0
+    }
+
+    &:nth-child(1) {
+        @include quickStatColors($baseColorSlateBlue)
+    }
+
+    &:nth-child(2) {
+        @include quickStatColors($baseColorCrimson)
+    }
+
+    &:nth-child(3) {
+        @include quickStatColors($baseColorDodgerBlue);
+    }
+
+    &:nth-child(4) {
+        @include quickStatColors($baseColorGold);
+    }
+    
+    .statTitle {
+        @include sectionHeadingFont();
+        margin-bottom: 0.5rem;
+    }
+
+    .statValue {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+}
+
+.statIconWrapper {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 1.5rem;
+
+    .hexagonIcon {
+        transform: rotate(90deg);
+        font-size: 4rem;
+    }
+
+    .statIcon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 1.75rem;
+        color: white;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.listsFlexWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .listsWrapper,
+    .activitiesWrapper {
+        box-shadow: $sectionBlockShadow;
+        border-radius: 1.5rem;
+    }
+
+    .listHeading {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem $listLeftPadding;
+
+        .viewMoreBtn {
+            @include LinkBtnColor();
+        }
+    }
+
+    .listsWrapper {
+        width: calc(60% - 1rem);
+
+        .listItem {
+            
+            &:not(.selected):hover {
+                background-color: $colorBtnHover;
+            }
+            
+            &.selected {
+                transition: color 0s;
+                background: $gradientBtnPurple;
+                color: white;
+            }
+        }
+    }
+    
+    .activitiesWrapper {
+        width: calc(40% - 1rem);
+        
+        .listItem {
+            display: flex;
+            justify-content: space-between;
+
+            &:hover {
+                background-color: $colorBtnHover;
+            }
+        }
+    }
+
+    .listItem {
+        display: flex;
+        align-items: center;
+        padding: 1rem $listLeftPadding;
+        border-radius: inherit;
+        cursor: pointer;
+        transition: all .2s;
+        
+        &:hover {
+            box-shadow: 0 0 1rem -0.25rem rgba(0, 0, 0, .05);
+        }
+    }
+}
+
+.peopleAmnt,
+.activityPrice {
+    margin-left: 1rem;
+}
+
+.peopleAmnt {
+
+}
+
+.peopleIcon {
+    margin-right: 0.25rem;
+}
+
+.activityPrice {
+
+}

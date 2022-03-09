@@ -1,0 +1,39 @@
+@import "../../../../styles/uiBase.scss";
+
+.header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-right: 1px solid $colorBtnHover;
+}
+
+.brand {
+    display: block;
+    margin: 2.5rem 1rem;
+}
+
+.navLinks {
+    display: flex;
+    flex-direction: column;
+
+    .link {
+        padding: 1rem 2rem 1rem 1rem;
+        transition: background-color .2s;
+
+        &:not(.active):hover {
+            background-color: $colorBtnHover;
+        }
+
+        .linkIcon {
+            margin-right: 0.5rem;
+            font-weight: normal;
+        }
+
+        &.active {
+            background: $gradientBtnPurple;
+            color: white;
+        }
+    }
+}

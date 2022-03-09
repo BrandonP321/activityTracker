@@ -1,0 +1,65 @@
+@import "../../../../styles/uiBase.scss";
+
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin: 3rem auto;
+    z-index: $zIndexHeader;
+}
+
+.leftContent {
+
+    .heading {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+}
+
+.rightContent {
+
+}
+
+.profileMenuWrapper {
+    position: relative;
+}
+
+.profileImg {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.profileMenu {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(0, calc(100% + 1rem));
+    opacity: 0;
+    pointer-events: none;
+    background-color: white;
+    width: 10rem;
+    border-radius: .5rem;
+    box-shadow: 0 0 2rem -0.75rem rgba(0, 0, 0, .15);
+    transition: opacity .2s, pointer-events 0s .2s;
+
+    &.show {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    a {
+        position: relative;
+        display: block;
+        padding: 1rem 2rem;
+        border-radius: inherit;
+        transition: background-color .2s;
+
+        &:hover {
+            background-color: #f3f3f3;
+        }
+
+    }
+}

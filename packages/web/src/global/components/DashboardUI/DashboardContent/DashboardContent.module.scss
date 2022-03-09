@@ -1,0 +1,17 @@
+@import "../../../../styles/uiBase.scss";
+
+.dashContentWrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.asideHeaderWrapper {
+    width: 25rem;
+    position: relative;
+}
+
+.innerContentWrapper {
+    position: relative;
+    flex-grow: 1;
+    padding: 0 2rem 2rem 2rem;
+}

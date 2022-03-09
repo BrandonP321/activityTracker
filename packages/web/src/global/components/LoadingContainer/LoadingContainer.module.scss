@@ -1,0 +1,31 @@
+@import "../../../styles/uiBase.scss";
+
+.loadingContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 7rem;
+    animation: spin 2s linear infinite;
+    // fontawesome styles
+    --fa-primary-color: #{$baseColorPurple};
+    --fa-secondary-color: black;
+    --fa-secondary-opacity: .2;
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}

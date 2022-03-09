@@ -14,6 +14,12 @@ export class RouteHelper {
         }
     }
 
+    /* AUTH */
     public static Login = () => this.SiteLink(this.Areas.Auth, "/Login");
+
+    /* DASHBOARD */
     public static UserDashboard = () => this.SiteLink(this.Areas.Dashboard);
+    public static DashboardLists = () => this.SiteLink(this.Areas.Dashboard, "/Lists");
+    public static DashboardActivities = () => this.SiteLink(this.Areas.Dashboard, "/Activities");
+    public static DashboardFriends = () => this.SiteLink(this.Areas.Dashboard, "/Friends");
 }

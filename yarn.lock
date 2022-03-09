@@ -52,6 +52,7 @@ __metadata:
     "@fortawesome/free-regular-svg-icons": ^6.0.0
     "@fortawesome/free-solid-svg-icons": ^6.0.0
     "@fortawesome/pro-duotone-svg-icons": ^6.0.0
+    "@fortawesome/pro-solid-svg-icons": ^6.0.0
     "@fortawesome/react-fontawesome": ^0.1.17
     "@loadable/component": ^5.15.2
     "@reduxjs/toolkit": ^1.8.0
@@ -1759,6 +1760,15 @@ __metadata:
   dependencies:
     "@fortawesome/fontawesome-common-types": ^0.3.0
   checksum: 8fdfa340fb53d649dfd788e6134868151279533a7f5903af297e17a09eea9a421a72de7f7ab58065aed1c53248950ec0612ac589731c2938a5f711b20111e381
+  languageName: node
+  linkType: hard
+
+"@fortawesome/pro-solid-svg-icons@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@fortawesome/pro-solid-svg-icons@npm:6.0.0::__archiveUrl=https%3A%2F%2Fnpm.fontawesome.com%2F%40fortawesome%2Fpro-solid-svg-icons%2F-%2F6.0.0%2Fpro-solid-svg-icons-6.0.0.tgz"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": ^0.3.0
+  checksum: c760a0a6d1cd8723cb4953a4e4bf6abc94269dcebc6eb81bb10f2ee1cf8682aeda22f2da8b92b6c40ffa6e5875299de0a8ea3db310cf9403046d55153fb03f29
   languageName: node
   linkType: hard
 

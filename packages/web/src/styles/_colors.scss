@@ -1,5 +1,33 @@
 // BASE COLORS
+$baseColorCrimson: #ef2b58;
+$baseColorSlateBlue: #6151fb;
+$baseColorDodgerBlue: #1b8be3;
+$baseColorGold: #ffa427;
+$baseColorPurple: #be1de7;
 
 // SITE COLORS
+$colorFadedRed: rgba($baseColorCrimson, .5);
+$colorFadedPurple: rgba($baseColorSlateBlue, .5);
+$colorFadedBlue: rgba($baseColorDodgerBlue, .5);
+$colorFadedGold: rgba($baseColorGold, .5);
+
+// GRADIENTS
+$gradientBtnPurple: linear-gradient(
+    to bottom, 
+    rgba($baseColorPurple, .65),
+    $baseColorPurple
+);
+$colorBtnHover: rgba(0, 0, 0, .1);
 
 // TEXT
+$colorLinkActive: rgba(0, 0, 0, .4);
+$colorLinkHover: rgba(0, 0, 0, .6);
+
+@mixin LinkBtnColor() {
+    color: $colorLinkActive;
+    transition: color .2s;
+
+    &:hover {
+        color: $colorLinkHover;
+    }
+}
