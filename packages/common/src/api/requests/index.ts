@@ -16,7 +16,7 @@ export const BaseRequestErrorCodes = {
 export const BaseRequestErrors = {
     UnexpectedCondition: (params?: { errMsg: string; }) => ({
         status: ServerErrorStatusCodes.InternalServerError,
-        error: RequestErrors.UnexpectedCondition,
+        error: BaseRequestErrorCodes.UnexpectedCondition,
     }),
     UserMustReAuth: (params?: {}) => ({
         status: ServerErrorStatusCodes.InternalServerError,

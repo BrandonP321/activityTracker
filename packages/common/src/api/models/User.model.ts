@@ -1,6 +1,6 @@
 import mongoose, { Model, Query } from "mongoose";
 import { IBaseModelProperties } from ".";
-// import { TToShallowChatJSONResponse } from "./Chat.modle";
+import { IActivity, IActivityDocument, IActivityModel } from "./Activity.model";
 
 /* properties on User model */
 export interface IUser extends IBaseModelProperties {
@@ -9,9 +9,13 @@ export interface IUser extends IBaseModelProperties {
     fullName: string;
     username: string;
     profileImg: string;
-    phone: string;
+    phone: string | null;
     /* random hash used to enforce refresh jwt's only being used once */
-    jwtHash: string;
+    jwtHash: string | null;
+    /* activities created by the user */
+    userActivities: mongoose.Types.ObjectId[];
+    /* activities saved by the user */
+    savedActivities: mongoose.Types.ObjectId[];
 }
 
 export interface IUserMethods {
@@ -20,6 +24,7 @@ export interface IUserMethods {
     generateRefreshToken: TGenerateRefreshToken;
     toShallowUserJSON: TToShallowUserJSON;
     toFullUserJSON: TToFullUserJSON;
+    populateUserActivities: TPopulateUserActivities;
 }
 
 /* instance methods of User Model */
@@ -42,6 +47,10 @@ export interface IUserFullResponse extends Omit<IUser, "password" | "_id" | "jwt
     id: string;
 }
 
+export interface IPopulatedUserModel extends Omit<IUserModel, "userActivities" | "savedActivities"> {
+    userActivities: IActivityModel[];
+    savedActivities: IActivityModel[];
+}
 
 // INSTANCE METHODS
 
@@ -50,6 +59,7 @@ export type TGenerateAccessToken = (hash: string, expiresIn: string) => string |
 export type TGenerateRefreshToken = (hash: string) => string | undefined;
 export type TToShallowUserJSON = () => Promise<IUserShallowResponse>;
 export type TToFullUserJSON = () => Promise<IUserFullResponse>;
+export type TPopulateUserActivities = () => Promise<IPopulatedUserModel | undefined>;
 // export type TPopulateChats = () => Promise<TToShallowChatJSONResponse[]>;
 
 // STATIC METHODS

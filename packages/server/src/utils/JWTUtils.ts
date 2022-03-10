@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
 import type { Request, Response } from "express";
 
-type IVerifiedTokenResponse = ({
+export type IVerifiedTokenResponse = ({
     userId: string;
     jwtHash: string;
 } & ({

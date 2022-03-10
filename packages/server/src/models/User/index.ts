@@ -1,8 +1,8 @@
 import mongoose, { NativeError, Schema as ISchema } from "mongoose";
 import bcrypt from "bcrypt";
 import { RegexUtils } from "@activitytracker/common/src/utils/RegexUtils";
-import type { IUser, IUserDocument, IUserMethods, IUserModel } from "@activitytracker/common/src/api/models/User.d";
-import { generateAccessToken, generateRefreshToken, handleUserDocSaveErr, toFullUserJSON, toShallowUserJSON, validatePassword } from "./userMethods";
+import type { IUser, IUserDocument, IUserMethods, IUserModel } from "@activitytracker/common/src/api/models/User.model";
+import { generateAccessToken, generateRefreshToken, handleUserDocSaveErr, populateUserActivities, toFullUserJSON, toShallowUserJSON, validatePassword } from "./userMethods";
 
 const { Schema } = mongoose;
 
@@ -34,9 +34,24 @@ const UserSchema: ISchema<IUserDocument, IUserModel, IUserDocument> = new Schema
         required: [true, "Name Required"]
     },
     phone: {
-        type: String
+        type: String,
+        default: null
     },
-    jwtHash: String,
+    jwtHash: {
+        type: String,
+        default: null
+    },
+    userActivities: {
+        type: [mongoose.Types.ObjectId],
+        ref: "Activity",
+        default: []
+    },
+    savedActivities: {
+        type: [mongoose.Types.ObjectId],
+        ref: "Activity",
+        default: []
+    },
+    
 }, { timestamps: true })
 
 
@@ -75,6 +90,7 @@ const userMethods: typeof UserSchema.methods & IUserMethods = {
     generateRefreshToken,
     toShallowUserJSON,
     toFullUserJSON,
+    populateUserActivities
 }
 
 UserSchema.methods = userMethods;

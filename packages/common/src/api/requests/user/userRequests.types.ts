@@ -1,5 +1,5 @@
 import { APIErrResponse } from "..";
-import { IUserFullResponse } from "../../models/User";
+import { IUserFullResponse } from "../../models/User.model";
 import { GetUserErrors } from "./userRequests.errors";
 
 export namespace GetUserRequest {

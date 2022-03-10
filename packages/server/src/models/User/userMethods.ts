@@ -1,9 +1,11 @@
-import { IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TToFullUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.d";
+import { IPopulatedUserModel, IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TPopulateUserActivities, TToFullUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.model";
 import { RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import bcrypt from "bcrypt";
 import { ValidErrRes } from "~Utils/ControllerUtils";
 import { JWTUtils } from "~Utils/JWTUtils";
 import mongoose from "mongoose";
+import { IActivityModel } from "@activitytracker/common/src/api/models/Activity.model";
+import { MongooseObjectId } from "~Utils/MongooseUtils";
 
 /**
  * INSTANCE METHODS
@@ -38,14 +40,16 @@ export const toShallowUserJSON: TToShallowUserJSON = async function(this: IUserM
 
 export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) {
     const userJSON: IUserFullResponse = {
-        createdAt: this.createdAt,
-        email: this.email,
-        fullName: this.fullName,
         id: this._id.toString(),
-        phone: this.phone,
+        email: this.email,
+        username: this.username,
+        fullName: this.fullName,
+        phone: this.phone ?? null,
         profileImg: this.profileImg,
+        userActivities: this.userActivities ?? [],
+        savedActivities: this.savedActivities ?? [],
+        createdAt: this.createdAt,
         updatedAt: this.updatedAt,
-        username: this.username
     }
 
     return userJSON;
@@ -97,6 +101,18 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
     }
 
     next(errObj)
+}
+
+export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel) {
+    try {
+        const populated: IPopulatedUserModel = await this.populate("userActivities");
+        await populated.populate("savedActivities");
+
+        return populated;
+    } catch(err) {
+        console.log(err);
+        return undefined
+    }
 }
 
 /**

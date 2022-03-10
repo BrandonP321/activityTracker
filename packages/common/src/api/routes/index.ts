@@ -1,3 +1,4 @@
+import { CreateActivityRequest, GetUserActivitiesRequest } from "../requests/activity";
 import { LoginUserRequest, RegisterUserRequest } from "../requests/auth";
 import { GetUserRequest } from "../requests/user/userRequests.types";
 
@@ -17,10 +18,16 @@ export const UserRoutes = {
     // UserSearch: (params?: UserSearchRequest["UrlParams"]) => `/api/user/search`
 }
 
+export const ActivityRoutes = {
+    CreateActivity: (params?: CreateActivityRequest.Request["UrlParams"]) => `/api/activity/create`,
+    GetUserActivities: (params?: GetUserActivitiesRequest.Request["UrlParams"]) => `/api/activity/user/activities`,
+}
+
 
 export const Routes = {
     ...AuthRoutes,
     ...UserRoutes,
+    ...ActivityRoutes,
 }
 
 export type ValidRoute = keyof typeof Routes;

@@ -1,5 +1,5 @@
 import { APIErrResponse } from "..";
-import { IUserShallowResponse } from "../../models/User";
+import { IUserShallowResponse } from "../../models/User.model";
 import { LoginUserErrors, RegisterUserErrors } from "./authRequests.errors";
 
 export namespace RegisterUserRequest {
