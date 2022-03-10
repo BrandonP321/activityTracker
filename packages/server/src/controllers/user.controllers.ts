@@ -3,29 +3,32 @@ import db from "~Models";
 import { RouteController } from "~Controllers";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
 import { NativeError } from "mongoose";
-import { IUserDocument, IUserModel } from "@activitytracker/common/src/api/models/User.d";
+import { IUserDocument, IUserModel } from "@activitytracker/common/src/api/models/User.model";
 import { ControllerUtils } from "~Utils/ControllerUtils";
 import { GetUserErrors, GetUserRequest } from "@activitytracker/common/src/api/requests/user";
 // GET
 
+const { respondWithErr, respondWithUnexpectedErr, controllerWrapper } = ControllerUtils;
+
 export const GetUserController: RouteController<GetUserRequest.Request, {}> = async (req, res) => {
-    db.User.findById(req.params.id, async (err: NativeError, user: IUserModel | null) => {
-        if (err) {
-            return ControllerUtils.respondWithUnexpectedErr(res, "Error finding user");
-        } else if (!user) {
-            return ControllerUtils.respondWithErr(GetUserErrors.Errors.UserNotFound(), res);
-        }
-
-        try {
-            const userJSON = await user.toFullUserJSON();
-
-            return res.json(userJSON).end();
-        } catch(err) {
-            return ControllerUtils.respondWithUnexpectedErr(res, "Error converting user doc to JSON object");
-        }
-
+    controllerWrapper(res, async () => {
+        db.User.findById(req.params.id, async (err: NativeError, user: IUserModel | null) => {
+            if (err) {
+                return ControllerUtils.respondWithUnexpectedErr(res, "Error finding user");
+            } else if (!user) {
+                return ControllerUtils.respondWithErr(GetUserErrors.Errors.UserNotFound(), res);
+            }
+    
+            try {
+                const userJSON = await user.toFullUserJSON();
+    
+                return res.json(userJSON).end();
+            } catch(err) {
+                return ControllerUtils.respondWithUnexpectedErr(res, "Error converting user doc to JSON object");
+            }
+    
+        })
     })
-
 }
 
 // export const UserSearchController: RouteController<UserSearchRequest, {}> = async (req, res) => {

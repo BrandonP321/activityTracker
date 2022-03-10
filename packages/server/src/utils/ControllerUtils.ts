@@ -10,7 +10,7 @@ export class ControllerUtils {
         return res.setHeader(header, value);
     }
 
-    // /* responds to express http request with an appropriate data response for the given error code */
+    /* responds to express http request with an appropriate data response for the given error code */
     public static respondWithErr(errObj: { status: number; error: string; }, res: Response) {
         const { status, ...rest } = errObj;
 
@@ -24,6 +24,15 @@ export class ControllerUtils {
     /* responsed to http request with 500 error for an unexpected server error */
     public static respondWithUnexpectedErr(res: Response, errMsg?: string) {
         this.respondWithErr(BaseRequestErrors.UnexpectedCondition(errMsg ? { errMsg } : undefined), res);
+    }
+
+    /* try-catch wrapper for controllers to catch any unplanned errors */
+    public static async controllerWrapper(res: Response, controller: () => Promise<any>) {
+        try {
+            await controller();
+        } catch(err) {
+            ControllerUtils.respondWithUnexpectedErr(res);
+        }
     }
 }
 

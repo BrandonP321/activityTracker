@@ -4,7 +4,7 @@ import type { Request, Response } from "express";
 export type RouteController<T extends { UrlParams: {}; ReqBody: {}; ResBody: {} }, ResLocals>  = (
     req: Request<T["UrlParams"], T["ResBody"], T["ReqBody"], T["UrlParams"], {}>,
     res: Response<T["ResBody"], ResLocals>
-) => void
+) => Promise<any>
 
 export interface DBUpdateResponse {
     acknowledged: boolean;
