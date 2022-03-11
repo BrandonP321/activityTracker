@@ -65,7 +65,7 @@ export type TGenerateRefreshToken = (hash: string) => string | undefined;
 export type TToShallowUserJSON = () => Promise<IUserShallowResponse>;
 export type TToFullUserJSON<ActivityType = mongoose.Types.ObjectId> = () => Promise<IUserFullResponse<ActivityType>>;
 export type TPopulateUserActivities = () => Promise<IPopulatedUserModel | undefined>;
-export type TToPopulatedUserJSON = () => Promise<IPopulatedUserFullResponse | undefined>;
+export type TToPopulatedUserJSON = (maxListLength?: number) => Promise<IPopulatedUserFullResponse | undefined>;
 // export type TPopulateChats = () => Promise<TToShallowChatJSONResponse[]>;
 
 // STATIC METHODS

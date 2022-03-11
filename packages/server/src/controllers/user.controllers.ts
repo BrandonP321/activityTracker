@@ -40,7 +40,7 @@ export const GetUserDashDataController: RouteController<GetUserDashDataRequest.R
             }
 
             // populate all fields on user doc
-            const populatedJSON = await user.toPopulatedUserJSON();
+            const populatedJSON = await user.toPopulatedUserJSON(3);
 
             if (!populatedJSON) {
                 return respondWithUnexpectedErr(res, "Error populating user data");

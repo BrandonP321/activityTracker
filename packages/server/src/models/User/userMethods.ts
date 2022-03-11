@@ -103,16 +103,13 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
     next(errObj)
 }
 
-export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel, maxLength?: number) {
+export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel) {
     try {
         // TODO: also populate savedActivites
         const populated: IPopulatedUserModel = await this.populate("userActivities");
-
-        if (maxLength) {
-            populated.userActivities = populated.userActivities.slice(0, maxLength);
-        }
-
-        await populated.populate("savedActivities");
+        
+        // await populated.populate("savedActivities");
+        // console.log(maxListLength, populated.userActivities)
 
         return populated;
     } catch(err) {
@@ -121,7 +118,7 @@ export const populateUserActivities: TPopulateUserActivities = async function(th
     }
 }
 
-export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IUserModel) {
+export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IUserModel, maxListLength?: number) {
     try {
         const populatedWithActivities = await this.populateUserActivities();
 
@@ -130,6 +127,8 @@ export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IU
         }
 
         const popuplatedUser = await populatedWithActivities.toFullUserJSON();
+
+        popuplatedUser.userActivities = popuplatedUser.userActivities.slice(0, maxListLength);
 
         return popuplatedUser;
     } catch (err) {
