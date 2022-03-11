@@ -31,6 +31,12 @@ export namespace GetUserDashDataRequest {
             
         }
         ResBody: {
+            quickStats: {
+                listsCount: number;
+                userActivitiesCount: number;
+                savedActivitiesCount: number;
+                friendsCount: number;
+            }
         } & IPopulatedUserFullResponse
         headers: {
             

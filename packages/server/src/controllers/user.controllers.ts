@@ -45,8 +45,18 @@ export const GetUserDashDataController: RouteController<GetUserDashDataRequest.R
             if (!populatedJSON) {
                 return respondWithUnexpectedErr(res, "Error populating user data");
             }
+
+            const dashJSON: GetUserDashDataRequest.Request["ResBody"] = {
+                ...populatedJSON,
+                quickStats: {
+                    friendsCount: 30,
+                    listsCount: 30,
+                    savedActivitiesCount: user.savedActivities?.length ?? 0,
+                    userActivitiesCount: user.userActivities?.length ?? 0
+                }
+            }
         
-            return res.json(populatedJSON).end();
+            return res.json(dashJSON).end();
         })
     })
 }
