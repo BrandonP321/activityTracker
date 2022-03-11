@@ -17,3 +17,19 @@ export namespace GetUserErrors {
         })
     } as const;
 };
+
+export namespace GetUserDashDataErrors {
+
+    export const ErrorCodes = {
+        ...BaseRequestErrorCodes,
+        UserNotFound: RequestErrors.InvalidId,
+    } as const;
+
+    export const Errors = {
+        ...BaseRequestErrors,
+        UserNotFound: (params?: {}) => ({
+            status: ClientErrorStatusCodes.NotFound,
+            error: ErrorCodes.UserNotFound
+        })
+    } as const;
+};

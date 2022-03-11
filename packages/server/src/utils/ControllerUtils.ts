@@ -23,6 +23,7 @@ export class ControllerUtils {
 
     /* responsed to http request with 500 error for an unexpected server error */
     public static respondWithUnexpectedErr(res: Response, errMsg?: string) {
+        console.error(errMsg);
         this.respondWithErr(BaseRequestErrors.UnexpectedCondition(errMsg ? { errMsg } : undefined), res);
     }
 

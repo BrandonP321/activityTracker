@@ -1,12 +1,10 @@
-// import { GetAllUsersRequest, GetUserRequest } from "@activitytracker/common/src/api/requests/user.requests";
 import db from "~Models";
 import { RouteController } from "~Controllers";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
 import { NativeError } from "mongoose";
 import { IUserDocument, IUserModel } from "@activitytracker/common/src/api/models/User.model";
 import { ControllerUtils } from "~Utils/ControllerUtils";
-import { GetUserErrors, GetUserRequest } from "@activitytracker/common/src/api/requests/user";
-// GET
+import { GetUserDashDataRequest, GetUserErrors, GetUserRequest } from "@activitytracker/common/src/api/requests/user";
 
 const { respondWithErr, respondWithUnexpectedErr, controllerWrapper } = ControllerUtils;
 
@@ -14,9 +12,9 @@ export const GetUserController: RouteController<GetUserRequest.Request, {}> = as
     controllerWrapper(res, async () => {
         db.User.findById(req.params.id, async (err: NativeError, user: IUserModel | null) => {
             if (err) {
-                return ControllerUtils.respondWithUnexpectedErr(res, "Error finding user");
+                return respondWithUnexpectedErr(res, "Error finding user");
             } else if (!user) {
-                return ControllerUtils.respondWithErr(GetUserErrors.Errors.UserNotFound(), res);
+                return respondWithErr(GetUserErrors.Errors.UserNotFound(), res);
             }
     
             try {
@@ -24,9 +22,31 @@ export const GetUserController: RouteController<GetUserRequest.Request, {}> = as
     
                 return res.json(userJSON).end();
             } catch(err) {
-                return ControllerUtils.respondWithUnexpectedErr(res, "Error converting user doc to JSON object");
+                return respondWithUnexpectedErr(res, "Error converting user doc to JSON object");
             }
-    
+        })
+    })
+}
+
+export const GetUserDashDataController: RouteController<GetUserDashDataRequest.Request, IAuthJWTResLocals> = async (req, res) => {
+    const userId = res.locals.user?.id;
+
+    controllerWrapper(res, async () => {
+        db.User.findById(userId, async (err: NativeError, user: IUserModel | null) => {
+            if (err) {
+                return respondWithUnexpectedErr(res, "Error finding user");
+            } else if (!user) {
+                return respondWithErr(GetUserErrors.Errors.UserNotFound(), res);
+            }
+
+            // populate all fields on user doc
+            const populatedJSON = await user.toPopulatedUserJSON();
+
+            if (!populatedJSON) {
+                return respondWithUnexpectedErr(res, "Error populating user data");
+            }
+        
+            return res.json(populatedJSON).end();
         })
     })
 }
@@ -39,7 +59,7 @@ export const GetUserController: RouteController<GetUserRequest.Request, {}> = as
 //     // make wildcard search for users with similar usernames
 //     db.User.find({ username: userRegex }, async (err, users) => {
 //         if (err || !users) {
-//             return ControllerUtils.respondWithUnexpectedErr(res);
+//             return respondWithUnexpectedErr(res);
 //         }
 
 //         const formattedUsers = await Promise.all(users.map(u => u.toShallowUserJSON()));

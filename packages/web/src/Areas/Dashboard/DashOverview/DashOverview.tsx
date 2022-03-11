@@ -1,36 +1,36 @@
-import { GetUser, GetUserRequest } from '@activitytracker/common/src/api/requests/user';
+import { GetUserDashData, GetUserDashDataRequest } from '@activitytracker/common/src/api/requests/user';
 import { ActivityUtils } from '@activitytracker/common/src/utils/ActivityUtils';
 import { faHexagon, faList, faUsers } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import TopDashHeader from '../../../global/components/DashboardUI/TopDashHeader/TopDashHeader';
 import LoadingContainer from '../../../global/components/LoadingContainer/LoadingContainer';
 import { APIFetch } from '../../../utils/APIUtils';
 import { tempData } from '../mockData';
 import styles from "./DashOverview.module.scss";
 
-type UserDashProps = {
+type DashOverviewProps = {
 
 }
 
 const tempProfilePic = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
 
-export default function DashOverview(props: UserDashProps) {
+export default function DashOverview(props: DashOverviewProps) {
   // const [userData, setUserData] = useState<GetUserRequest.Request["ReqBody"] | null>(null)
-  const [userData, setUserData] = useState<string | null>("asdf")
+  const [userData, setUserData] = useState<GetUserDashDataRequest.Request["ResBody"] | null>(null)
   const [selectedList, setSelectedList] = useState(0);
   const maxListLength = 10;
 
   useEffect(() => {
-    // APIFetch<GetUserRequest.Request>(() => GetUser({ id: "621ded33cd8fe01fdbfc2aed" }, {}, {}))
-    //   .then(res => {
-    //     console.log(res.data)
-    //   })
-    //   .catch((err: GetUserRequest.ErrResponse) => {
-    //     console.log(err.response);
-    //   })
+    APIFetch<GetUserDashDataRequest.Request>(() => GetUserDashData({}, {}, {}))
+      .then(res => {
+        console.log(res.data)
+        setUserData(res.data);
+      })
+      .catch((err: GetUserDashDataRequest.ErrResponse) => {
+        console.log(err.response);
+      })
   }, [])
 
   if (!userData) {
@@ -45,6 +45,8 @@ export default function DashOverview(props: UserDashProps) {
   ];
 
   const currentList = tempData?.lists[selectedList];
+
+  const activities = userData?.userActivities;
 
   return (
     <div className={styles.dashOverviewWrapper}>
@@ -85,12 +87,12 @@ export default function DashOverview(props: UserDashProps) {
             <h2 className={styles.sectionHeading}>{currentList?.name}</h2>
             <a href={"/"} className={styles.viewMoreBtn}>View All</a>
           </div>
-          {currentList?.activities?.slice(0, maxListLength).map((a, i) => {
-            const peopleAllowed = ActivityUtils.getPeopleAllowedString({people: a?.peopleAllowed?.amount, orMore: a?.peopleAllowed?.orMore, orLess: a?.peopleAllowed?.orLess});
-            const price = ActivityUtils.getPriceString(a.price);
+          {activities.map((a, i) => {
+            const peopleAllowed = ActivityUtils.getPeopleAllowedString({people: a?.numbPeople?.amount, orMore: a?.numbPeople?.orMore, orLess: a?.numbPeople?.orLess});
+            const price = ActivityUtils.getPriceString(a?.price ?? null);
 
             return (
-              <Link className={classNames(styles.listItem)} to={a.url} key={i}>
+              <Link className={classNames(styles.listItem)} to={a.url ?? ""} key={i}>
                 <span>{a.name}</span>
                 <div>
                   {price &&

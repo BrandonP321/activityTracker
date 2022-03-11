@@ -24,7 +24,7 @@ export class ActivityUtils {
         return priceString;
     }
 
-    public static getPeopleAllowedString({ people, orMore, orLess }: { people?: number; orMore?: boolean, orLess?: boolean }) {
+    public static getPeopleAllowedString({ people, orMore, orLess }: { people: number | null; orMore: boolean | null, orLess: boolean | null }) {
         let peopleAllowed = undefined;
 
         if (!people) {

@@ -2,7 +2,7 @@ import mongoose, { Model } from "mongoose";
 import { IBaseModelProperties } from ".";
 
 /* properties on activity model */
-export interface IActivity extends IBaseModelProperties {
+export type IActivity = IBaseModelProperties & {
     name: string;
     tags: string[];
     price: number | null;

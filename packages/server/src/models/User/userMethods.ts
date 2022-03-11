@@ -1,4 +1,4 @@
-import { IPopulatedUserModel, IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TPopulateUserActivities, TToFullUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.model";
+import { IPopulatedUserModel, IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TPopulateUserActivities, TToFullUserJSON, TToPopulatedUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.model";
 import { RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import bcrypt from "bcrypt";
 import { ValidErrRes } from "~Utils/ControllerUtils";
@@ -103,15 +103,37 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
     next(errObj)
 }
 
-export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel) {
+export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel, maxLength?: number) {
     try {
+        // TODO: also populate savedActivites
         const populated: IPopulatedUserModel = await this.populate("userActivities");
+
+        if (maxLength) {
+            populated.userActivities = populated.userActivities.slice(0, maxLength);
+        }
+
         await populated.populate("savedActivities");
 
         return populated;
     } catch(err) {
         console.log(err);
         return undefined
+    }
+}
+
+export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IUserModel) {
+    try {
+        const populatedWithActivities = await this.populateUserActivities();
+
+        if (!populatedWithActivities) {
+            return undefined;
+        }
+
+        const popuplatedUser = await populatedWithActivities.toFullUserJSON();
+
+        return popuplatedUser;
+    } catch (err) {
+        return undefined;
     }
 }
 
