@@ -1,11 +1,13 @@
 @import "../../../../styles/uiBase.scss";
 
 $asideHeaderTransitionDuration: .3s;
+$asideHeaderDesktopWidth: 25rem;
 
 .dashContentWrapper {
     display: flex;
     min-height: 100vh;
     position: relative;
+    justify-content: flex-end;
 }
 
 .pageOverlay {
@@ -29,15 +31,16 @@ $asideHeaderTransitionDuration: .3s;
 
 .asideHeaderWrapper {
     width: 100%;
-    max-width: 25rem;
-    position: relative;
+    max-width: $asideHeaderDesktopWidth;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
     background-color: white;
 
     @include largeVW() {
-        position: fixed;
-        top: 0;
+        left: auto;
         right: 0;
-        bottom: 0;
         z-index: $zIndexHeader + 1;
         transform: translateX(100%);
         transition: box-shadow $asideHeaderTransitionDuration, transform $asideHeaderTransitionDuration;
@@ -51,8 +54,13 @@ $asideHeaderTransitionDuration: .3s;
 
 .innerContentWrapper {
     position: relative;
-    flex-grow: 1;
+    width: calc(100% - #{$asideHeaderDesktopWidth});
     padding: 0 2rem 2rem 2rem;
+    z-index: $zIndexHeader - 1;
+
+    @include largeVW() {
+        width: 100%;
+    }
 
     @include mobileVW() {
         padding: 0 0 2rem 0;

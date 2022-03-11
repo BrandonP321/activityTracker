@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { BrowserUtils } from '../../../../utils/BrowserUtils';
 import AsideDashHeader from '../AsideDashHeader/AsideDashHeader';
 import TopDashHeader from '../TopDashHeader/TopDashHeader';
 import styles from "./DashboardContent.module.scss";
@@ -10,6 +11,14 @@ type DashboardContentProps = {
 
 export default function DashboardContent(props: DashboardContentProps) {
   const [showAsideHeader, setShowAsideHeader] = useState(false);
+
+  useEffect(() => {
+    if (showAsideHeader) {
+      BrowserUtils.LockScroll();
+    } else {
+      BrowserUtils.UnlockScroll();
+    }
+  }, [showAsideHeader])
 
   const toggleAsideHeader = () => {
     setShowAsideHeader(!showAsideHeader)
