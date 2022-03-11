@@ -9,6 +9,17 @@
     border-right: 1px solid $colorBtnHover;
 }
 
+.exitIcon {
+    display: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    @include mobileVW() {
+        display: block;
+    }
+}
+
 .brand {
     display: block;
     margin: 2.5rem 1rem;

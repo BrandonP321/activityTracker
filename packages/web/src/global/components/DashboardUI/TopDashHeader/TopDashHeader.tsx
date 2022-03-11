@@ -1,8 +1,12 @@
+import { faBars } from '@fortawesome/pro-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react'
 import styles from "./TopDashHeader.module.scss";
 
-type TopDashHeaderProps = {}
+type TopDashHeaderProps = {
+    toggleAsideHeader: () => void;
+}
 
 const tempProfilePic = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
 
@@ -54,6 +58,7 @@ export default function TopDashHeader(props: TopDashHeaderProps) {
                         })}
                     </div>
                 </div>
+                <FontAwesomeIcon icon={faBars} className={styles.menuIcon} onClick={props.toggleAsideHeader}/>
             </div>
         </header>
     )

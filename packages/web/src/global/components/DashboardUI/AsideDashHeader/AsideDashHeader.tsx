@@ -1,4 +1,4 @@
-import { faCubes, faList, faPersonRunning, faUsers } from '@fortawesome/pro-solid-svg-icons';
+import { faCubes, faList, faPersonRunning, faUsers, faX } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React from 'react'
@@ -6,7 +6,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { RouteHelper } from '../../../Navigation/RouteHelper';
 import styles from "./AsideDashHeader.module.scss";
 
-type AsideDashHeaderProps = {}
+type AsideDashHeaderProps = {
+  toggleShow: () => void;
+}
 
 const navLinks = [
   { title: "Dashboard", url: RouteHelper.UserDashboard(), icon: faCubes },
@@ -20,6 +22,7 @@ export default function AsideDashHeader(props: AsideDashHeaderProps) {
 
   return (
     <div className={styles.header}>
+      <FontAwesomeIcon icon={faX} className={styles.exitIcon} onClick={props.toggleShow}/>
       <a href={"/"} className={styles.brand}>###BRAND###</a>
       <div className={styles.navLinks}>
         {navLinks.map((link, i) => {
@@ -37,6 +40,7 @@ export default function AsideDashHeader(props: AsideDashHeaderProps) {
               to={link.url} 
               className={classNames(styles.link, {[styles.active]: isActiveLink})}
               key={i}
+              onClick={props.toggleShow}
             >
               <span>
                 <FontAwesomeIcon icon={link.icon} className={styles.linkIcon}/>

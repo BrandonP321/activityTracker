@@ -1,17 +1,63 @@
 @import "../../../../styles/uiBase.scss";
 
+$asideHeaderTransitionDuration: .3s;
+
 .dashContentWrapper {
     display: flex;
     min-height: 100vh;
+    position: relative;
+}
+
+.pageOverlay {
+    @include largeVW() {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0);
+        z-index: $zIndexHeader;
+        pointer-events: none;
+        transition: background-color $asideHeaderTransitionDuration;
+
+        &.show {
+            pointer-events: all;
+            background-color: rgba(0, 0, 0, .3);
+        }
+    }
 }
 
 .asideHeaderWrapper {
-    width: 25rem;
+    width: 100%;
+    max-width: 25rem;
     position: relative;
+    background-color: white;
+
+    @include largeVW() {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: $zIndexHeader + 1;
+        transform: translateX(100%);
+        transition: box-shadow $asideHeaderTransitionDuration, transform $asideHeaderTransitionDuration;
+        
+        &.show {
+            transform: translateX(0);
+            box-shadow: 0 0 3rem -1rem rgba(0, 0, 0, .5);
+        }
+    }
 }
 
 .innerContentWrapper {
     position: relative;
     flex-grow: 1;
     padding: 0 2rem 2rem 2rem;
+
+    @include mobileVW() {
+        padding: 0 0 2rem 0;
+        width: 90vw;
+        flex-grow: unset;
+        margin: 0 auto;
+    }
 }
