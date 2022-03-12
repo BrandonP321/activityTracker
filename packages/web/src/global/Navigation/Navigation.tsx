@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, RouteProps } from "react-router
 import LoadingContainer from '../components/LoadingContainer/LoadingContainer';
 import loadable from "@loadable/component";
 
-export default function Navigation() {
+export default React.memo(function Navigation() {
   return (
     <Router>
       <Routes>
@@ -18,7 +18,7 @@ export default function Navigation() {
       </Routes>
     </Router>
   )
-}
+})
 
 interface IAsyncComponent extends Omit<RouteProps, "component"> {
   lazyComponentDynamicImport: () => Promise<any>
