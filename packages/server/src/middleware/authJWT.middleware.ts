@@ -70,7 +70,7 @@ const verifyTokenHash = (aToken: IVerifiedTokenResponse, rToken: IVerifiedTokenR
         }
 
         // if hash on jwt's and hash in user db instance match, refresh tokens
-        if (user.jwtHash && (user.jwtHash === aToken?.jwtHash) && (user.jwtHash === rToken?.jwtHash)) {
+        if (user?.jwtHash && (user?.jwtHash === aToken?.jwtHash) && (user.jwtHash === rToken?.jwtHash)) {
             return refreshTokens(req, res, id, next);
         } else {
             return haveUserReAuth(res);

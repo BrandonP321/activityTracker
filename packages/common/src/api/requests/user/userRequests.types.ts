@@ -1,4 +1,5 @@
 import { APIErrResponse } from "..";
+import { IListFullResponse } from "../../models/List.model";
 import { IPopulatedUserFullResponse, IUserFullResponse } from "../../models/User.model";
 import { GetUserDashDataErrors, GetUserErrors } from "./userRequests.errors";
 
@@ -38,6 +39,26 @@ export namespace GetUserDashDataRequest {
                 friendsCount: number;
             }
         } & IPopulatedUserFullResponse
+        headers: {
+            
+        }
+    }
+
+    export type ErrResponse = APIErrResponse<typeof GetUserDashDataErrors.Errors>;
+};
+
+export namespace GetUserListsRequest {
+
+    export interface Request {
+        UrlParams: {
+
+        }
+        ReqBody: {
+            
+        }
+        ResBody: {
+            lists: IListFullResponse[];
+        }
         headers: {
             
         }

@@ -1,10 +1,11 @@
 import db from "~Models";
 import { RouteController } from "~Controllers";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
-import { NativeError } from "mongoose";
+import { NativeError, CallbackError } from "mongoose";
 import { IUserDocument, IUserModel } from "@activitytracker/common/src/api/models/User.model";
 import { ControllerUtils } from "~Utils/ControllerUtils";
-import { GetUserDashDataRequest, GetUserErrors, GetUserRequest } from "@activitytracker/common/src/api/requests/user";
+import { GetUserDashDataRequest, GetUserErrors, GetUserListsErrors, GetUserListsRequest, GetUserRequest } from "@activitytracker/common/src/api/requests/user";
+import { FoundDoc } from "~Utils/MongooseUtils";
 
 const { respondWithErr, respondWithUnexpectedErr, controllerWrapper } = ControllerUtils;
 
@@ -29,9 +30,9 @@ export const GetUserController: RouteController<GetUserRequest.Request, {}> = as
 }
 
 export const GetUserDashDataController: RouteController<GetUserDashDataRequest.Request, IAuthJWTResLocals> = async (req, res) => {
-    const userId = res.locals.user?.id;
-
     controllerWrapper(res, async () => {
+        const userId = res.locals.user?.id;
+
         db.User.findById(userId, async (err: NativeError, user: IUserModel | null) => {
             if (err) {
                 return respondWithUnexpectedErr(res, "Error finding user");
@@ -61,25 +62,29 @@ export const GetUserDashDataController: RouteController<GetUserDashDataRequest.R
     })
 }
 
-// export const UserSearchController: RouteController<UserSearchRequest, {}> = async (req, res) => {
-//     const { userInput } = req.query;
-//     // create regex for wildcard search for user
-//     const userRegex = new RegExp(`^${userInput ?? ""}`, "ig");
+export const GetUserListsController: RouteController<GetUserListsRequest.Request, IAuthJWTResLocals> = async (req, res) => {
+    controllerWrapper(res, async () => {
+        const userId = res.locals.user?.id;
 
-//     // make wildcard search for users with similar usernames
-//     db.User.find({ username: userRegex }, async (err, users) => {
-//         if (err || !users) {
-//             return respondWithUnexpectedErr(res);
-//         }
+        db.User.findById(userId, async (err: CallbackError, user: FoundDoc<IUserModel>) => {
+            if (err) {
+                return respondWithUnexpectedErr(res, "Error retrieving user data");
+            } else if (!user) {
+                return respondWithErr(GetUserListsErrors.Errors.UserNotFound(), res);
+            }
 
-//         const formattedUsers = await Promise.all(users.map(u => u.toShallowUserJSON()));
+            const populatedUser = await user.populateUserLists();
 
-//         res.json({
-//             foundUsers: formattedUsers
-//         }).end();
-//     })
+            const userJSON = await populatedUser?.toFullUserJSON();
 
-// }
+            if (!userJSON) {
+                return respondWithUnexpectedErr(res, "Error populating lists data");
+            }
+
+            res.json({ lists: userJSON.lists })
+        })
+    })
+}
 
 // POST
 

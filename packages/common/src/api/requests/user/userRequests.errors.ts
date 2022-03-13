@@ -33,3 +33,19 @@ export namespace GetUserDashDataErrors {
         })
     } as const;
 };
+
+export namespace GetUserListsErrors {
+
+    export const ErrorCodes = {
+        ...BaseRequestErrorCodes,
+        UserNotFound: "UserNotFound",
+    } as const;
+
+    export const Errors = {
+        ...BaseRequestErrors,
+        UserNotFound: (params?: {}) => ({
+            status: ClientErrorStatusCodes.NotFound,
+            error: ErrorCodes.UserNotFound
+        })
+    } as const;
+};

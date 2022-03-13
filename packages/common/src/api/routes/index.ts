@@ -1,7 +1,7 @@
 import { CreateActivityRequest, GetUserActivitiesRequest } from "../requests/activity";
 import { LoginUserRequest, RegisterUserRequest } from "../requests/auth";
 import { CreateListRequest } from "../requests/list";
-import { GetUserDashDataRequest, GetUserRequest } from "../requests/user/userRequests.types";
+import { GetUserDashDataRequest, GetUserListsRequest, GetUserRequest } from "../requests/user/userRequests.types";
 
 /**
  * URL params but be identical to those in the request type in the
@@ -16,6 +16,7 @@ export const AuthRoutes = {
 export const UserRoutes = {
     GetUserDashData: (params?: GetUserDashDataRequest.Request["UrlParams"]) => "/api/user/dash/all",
     GetUser: (params?: GetUserRequest.Request["UrlParams"]) => `/api/user/${params?.id ?? ":id"}`,
+    GetUserLists: (params?: GetUserListsRequest.Request["UrlParams"]) => `/api/user/lists/all`,
     // UserSearch: (params?: UserSearchRequest["UrlParams"]) => `/api/user/search`
 }
 
