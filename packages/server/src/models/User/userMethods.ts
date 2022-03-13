@@ -1,4 +1,4 @@
-import { IPopulatedUserModel, IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TPopulateUserActivities, TToFullUserJSON, TToPopulatedUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.model";
+import { IPopulatedUserActivitiesModel, IPopulatedUserListsModel, IPopulatedUserModel, IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TPopulateUserActivities, TPopulateUserLists, TToFullUserJSON, TToPopulatedUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.model";
 import { RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import bcrypt from "bcrypt";
 import { ValidErrRes } from "~Utils/ControllerUtils";
@@ -48,6 +48,7 @@ export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) 
         profileImg: this.profileImg,
         userActivities: this.userActivities ?? [],
         savedActivities: this.savedActivities ?? [],
+        lists: this.lists ?? [],
         createdAt: this.createdAt,
         updatedAt: this.updatedAt,
     }
@@ -105,33 +106,37 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
 
 export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel) {
     try {
-        // TODO: also populate savedActivites
-        const populated: IPopulatedUserModel = await this.populate("userActivities");
-        
-        // await populated.populate("savedActivities");
-        // console.log(maxListLength, populated.userActivities)
+        const populated: IPopulatedUserActivitiesModel = await this.populate(["userActivities", "savedActivities"]);
 
-        return populated;
+        return populated ?? [];
     } catch(err) {
         console.log(err);
         return undefined
     }
 }
 
+export const populateUserLists: TPopulateUserLists = async function(this: IUserModel) {
+    try {
+        const populated: IPopulatedUserListsModel = await this.populate("lists");
+
+        return populated ?? [];
+    } catch(err) {
+        console.log(err);
+        return undefined
+    }
+}
+
+// export const populateUserLists: 
+
 export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IUserModel, maxListLength?: number) {
     try {
-        const populatedWithActivities = await this.populateUserActivities();
+        const populated: IPopulatedUserModel = await this.populate(["userActivities", "savedActivities", "lists"]);
 
-        if (!populatedWithActivities) {
-            return undefined;
-        }
+        const populatedUserJSON = populated.toFullUserJSON();
 
-        const popuplatedUser = await populatedWithActivities.toFullUserJSON();
-
-        popuplatedUser.userActivities = popuplatedUser.userActivities.slice(0, maxListLength);
-
-        return popuplatedUser;
+        return populatedUserJSON;
     } catch (err) {
+        console.error(err);
         return undefined;
     }
 }

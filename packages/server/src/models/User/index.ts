@@ -51,7 +51,11 @@ const UserSchema: ISchema<IUserDocument, IUserModel, IUserDocument> = new Schema
         ref: "Activity",
         default: []
     },
-    
+    lists: {
+        type: [mongoose.Types.ObjectId],
+        ref: "List",
+        default: []
+    },
 }, { timestamps: true })
 
 
