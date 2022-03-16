@@ -2,6 +2,8 @@ import { ControllerUtils } from "./ControllerUtils";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
 import type { Request, Response } from "express";
+import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils";
+import { MasterConfig } from "@activitytracker/common/src/config";
 
 export type IVerifiedTokenResponse = ({
     userId: string;
@@ -13,12 +15,14 @@ export type IVerifiedTokenResponse = ({
     token: jwt.JwtPayload;
 })) | undefined
 
+const accessTokenExpirationTime = ConfigUtils.getParam(MasterConfig.JWTSettings.AccessTokenExpirationTime, "100000");
+const refreshTokenExpirationTime = ConfigUtils.getParam(MasterConfig.JWTSettings.AccessTokenExpirationTime, "100000");
+
 export class JWTUtils {
     private static signToken(userId: string, isRefreshToken: boolean, hash: string, expiresIn?: string) {
         const tokenSecret = EnvUtils.getEnvVar(isRefreshToken ? ServerEnvVars.REFRESH_TOKEN_SECRET : ServerEnvVars.ACCESS_TOKEN_SECRET);
 
         if (!tokenSecret) {
-            console.error("Error getting SECRET Env Variable");
             return undefined;
         }
 
@@ -36,12 +40,12 @@ export class JWTUtils {
         return jwt.sign({}, tokenSecret, signOptions)
     }
 
-    public static signAccessToken (userId: string, hash: string, expiresIn: string) {
-        return JWTUtils.signToken(userId, false, hash, expiresIn);
+    public static signAccessToken (userId: string, hash: string, expiresIn?: string) {
+        return JWTUtils.signToken(userId, false, hash, expiresIn ?? accessTokenExpirationTime);
     }
 
     public static signRefreshToken(userId: string, hash: string, expiresIn?: string) {
-        return JWTUtils.signToken(userId, true, hash, expiresIn);
+        return JWTUtils.signToken(userId, true, hash, expiresIn ?? refreshTokenExpirationTime);
     }
 
     private static verifyToken(token: string | null, secret: string | undefined): IVerifiedTokenResponse {

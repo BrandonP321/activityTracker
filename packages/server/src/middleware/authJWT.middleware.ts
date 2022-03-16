@@ -10,6 +10,7 @@ import { BaseRequestErrors } from "@activitytracker/common/src/api/requests";
 import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils";
 import { MasterConfig } from "@activitytracker/common/src/config";
 import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
+import * as DateFns from "date-fns";
 
 // other properties that will exist in Request object
 export interface IAuthJWTResLocals {
@@ -65,13 +66,18 @@ const verifyTokenHash = (aToken: IVerifiedTokenResponse, rToken: IVerifiedTokenR
     id = new mongoose.Types.ObjectId(aToken?.userId);
 
     db.User.findById(id, (err: any, user: IUserDocument) => {
-        if (err) {
+        if (err || !user) {
             return haveUserReAuth(res);
         }
 
-        // if hash on jwt's and hash in user db instance match, refresh tokens
-        if (user?.jwtHash && (user?.jwtHash === aToken?.jwtHash) && (user.jwtHash === rToken?.jwtHash)) {
-            return refreshTokens(req, res, id, next);
+        // hash stored on jwt
+        const userJWTHash = rToken?.jwtHash
+        // check if hash exists on jwt hash object in db
+        const isValidHash = !!(userJWTHash && user?.jwtHash[userJWTHash]);
+
+        // if hash from jwt is valid and refresh token is not expired, refresh tokens
+        if (isValidHash && !rToken?.isExpired) {
+            return refreshTokens(req, res, id, userJWTHash, next);
         } else {
             return haveUserReAuth(res);
         }
@@ -79,14 +85,27 @@ const verifyTokenHash = (aToken: IVerifiedTokenResponse, rToken: IVerifiedTokenR
 }
 
 /* generate new jwt's and void current refresh token */
-const refreshTokens = async (req: Request, res: Response, userId: mongoose.Types.ObjectId, next: NextFunction) => {
+const refreshTokens = async (req: Request, res: Response, userId: mongoose.Types.ObjectId, oldHash: string, next: NextFunction) => {
     const tokenHash = await generateRandomHash();
 
     // find user and update jwt hash for user's document
-    db.User.findOneAndUpdate({ _id: userId }, { $set: { jwtHash: tokenHash } }, async (err: NativeError, user: IUserDocument) => {
+    db.User.findOne({ _id: userId }, async (err: NativeError, user: IUserDocument) => {
         if (err || !user) {
             return haveUserReAuth(res);
         }
+
+        const newHashObj = {...(user.jwtHash ?? {})};
+
+        try {
+            // try removing old hash key/value from jwt hash obj
+            delete newHashObj[oldHash];
+        } catch (err) {}
+
+        // add new token to jwt hash obj
+        newHashObj[tokenHash] = true;
+        user.jwtHash = newHashObj;
+        // update user instance in db
+        user.save();
 
         createTokenCookies(user, tokenHash, res);
 
@@ -96,10 +115,8 @@ const refreshTokens = async (req: Request, res: Response, userId: mongoose.Types
     })
 }
 
-const JWTExpirationTime = ConfigUtils.getParam(MasterConfig.JWTSettings.AccessTokenExpirationTime, "1000")
-
 export const createTokenCookies = (user: IUserDocument, hash: string, res: Response) => {
-    const accessToken = user.generateAccessToken(hash, JWTExpirationTime);
+    const accessToken = user.generateAccessToken(hash);
     const refreshToken = user.generateRefreshToken(hash);
 
     const tokens = {
@@ -119,6 +136,7 @@ export const createTokenCookies = (user: IUserDocument, hash: string, res: Respo
 
 const SECRET = EnvUtils.getEnvVar(ServerEnvVars.SECRET, "");
 
+// generates random rash with no periods to avoid issues accessing values within objects later
 export const generateRandomHash = async () => {
-    return await bcrypt.hash(SECRET, 10)
+    return (await bcrypt.hash(SECRET, 10)).replace(/\./g, "");
 }

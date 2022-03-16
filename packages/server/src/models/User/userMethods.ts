@@ -6,6 +6,8 @@ import { JWTUtils } from "~Utils/JWTUtils";
 import mongoose from "mongoose";
 import { IActivityModel } from "@activitytracker/common/src/api/models/Activity.model";
 import { MongooseObjectId } from "~Utils/MongooseUtils";
+import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils";
+import { MasterConfig } from "@activitytracker/common/src/config";
 
 /**
  * INSTANCE METHODS
@@ -15,8 +17,8 @@ export const validatePassword: TValidatePassword = async function(this: IUserMod
     return bcrypt.compare(pass, this.password);
 }
 
-export const generateAccessToken: TGenerateAccessToken = function(this: IUserModel, hash: string, expiresIn) {
-    const token = JWTUtils.signAccessToken(this._id.toString(), hash, expiresIn);
+export const generateAccessToken: TGenerateAccessToken = function(this: IUserModel, hash: string) {
+    const token = JWTUtils.signAccessToken(this._id.toString(), hash);
 
     return token;
 }
@@ -125,8 +127,6 @@ export const populateUserLists: TPopulateUserLists = async function(this: IUserM
         return undefined
     }
 }
-
-// export const populateUserLists: 
 
 export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IUserModel, maxListLength?: number) {
     try {

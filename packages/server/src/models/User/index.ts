@@ -38,8 +38,8 @@ const UserSchema: ISchema<IUserDocument, IUserModel, IUserDocument> = new Schema
         default: null
     },
     jwtHash: {
-        type: String,
-        default: null
+        type: Schema.Types.Mixed,
+        default: {}
     },
     userActivities: {
         type: [mongoose.Types.ObjectId],

@@ -32,7 +32,7 @@ export const RegisterUserController: RouteController<RegisterUserRequest.Request
     
         const user: Partial<IUser> = {
             ...req.body,
-            jwtHash: newTokenHash
+            jwtHash: { [newTokenHash]: true }
         }
     
         db.User.create(user, async (err: CallbackError | IUserDocSaveErr, user) => {
@@ -67,9 +67,11 @@ export const LoginUserController: RouteController<LoginUserRequest.Request, {}> 
     
         // hash that will be used to enforce that a refresh token is only used once
         const newTokenHash = await generateRandomHash();
+
     
-        db.User.findOneAndUpdate({ email }, { $set: { jwtHash: newTokenHash } }, async (err: NativeError, user: IUserDocument | null) => {
+        db.User.findOne({ email }, async (err: NativeError, user: IUserDocument | null) => {
             if (err) {
+                console.log(err);
                 // status 500 if any error occurred while finding the user's collection, not including if it wasn't found
                 return respondWithUnexpectedErr(res);
             } else if (!user) {
@@ -81,10 +83,18 @@ export const LoginUserController: RouteController<LoginUserRequest.Request, {}> 
             if (!isPasswordValid) {
                 return respondWithErr(LoginUserErrors.Errors.IncorrectEmailOrPassword({}), res);
             }
+
+            const newHashObj = {
+                ...(user.jwtHash ?? {}),
+                [newTokenHash]: true,
+            }
     
             try {
                 createTokenCookies(user, newTokenHash, res);
+                user.jwtHash = newHashObj;
+                user.save();
             } catch (err) {
+                console.log(err);
                 return respondWithUnexpectedErr(res);
             }
     
@@ -95,13 +105,4 @@ export const LoginUserController: RouteController<LoginUserRequest.Request, {}> 
             }).send().end();
         })
     })
-}
-
-const JWTExpirationTime = ConfigUtils.getParam(MasterConfig.JWTSettings.AccessTokenExpirationTime, "1000")
-
-const generateTokens = async (user: IUserDocument, hash: string) => {
-    const accessToken = user.generateAccessToken(hash, JWTExpirationTime);
-    const refreshToken = user.generateRefreshToken(hash);
-
-    return { accessToken, refreshToken }
 }

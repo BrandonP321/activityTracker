@@ -12,7 +12,9 @@ export type IUser<ActivityType = mongoose.Types.ObjectId, ListType = mongoose.Ty
     profileImg: string;
     phone: string | null;
     /* random hash used to enforce refresh jwt's only being used once */
-    jwtHash: string | null;
+    jwtHash: {
+        [key: string]: boolean;
+    };
     /* activities created by the user */
     userActivities: ActivityType[];
     /* activities saved by the user */
@@ -76,7 +78,7 @@ export type IPopulatedUserFullResponse = IUserFullResponse<IActivityFullResponse
 // INSTANCE METHODS
 
 export type TValidatePassword = (password: string) => Promise<boolean>;
-export type TGenerateAccessToken = (hash: string, expiresIn: string) => string | undefined;
+export type TGenerateAccessToken = (hash: string) => string | undefined;
 export type TGenerateRefreshToken = (hash: string) => string | undefined;
 export type TToShallowUserJSON = () => Promise<IUserShallowResponse>;
 export type TToFullUserJSON<ActivityType = mongoose.Types.ObjectId, ListType = mongoose.Types.ObjectId> = () => Promise<IUserFullResponse<ActivityType, ListType>>;

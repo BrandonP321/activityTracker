@@ -11,6 +11,9 @@ export const ServerConfig = new System({ enabled: true, description: "Settings f
     }),
     JWTSettings: new System({ enabled: true, description: "Settings for JSON web tokens"}, {
         AccessTokenExpirationTime: new Param({ enabled: true, value: "1", overrides: {
+            local: { enabled: true, value: "5000" }
+        }}),
+        RefreshTokenExpirationTime: new Param({ enabled: true, value: JSON.stringify(1000 * 60 * 60 * 8), description: "Expiration Time for Refresh JWT.  Will force user to log back in if not refreshed before it expires", overrides: {
             local: { enabled: true, value: "10000" }
         } })
     })
