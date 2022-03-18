@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react'
+import { useAppSelector } from '../../../../features/hooks';
 import { BrowserUtils } from '../../../../utils/BrowserUtils';
 import AsideDashHeader from '../AsideDashHeader/AsideDashHeader';
 import TopDashHeader from '../TopDashHeader/TopDashHeader';
@@ -12,8 +13,10 @@ type DashboardContentProps = {
 export default function DashboardContent(props: DashboardContentProps) {
   const [showAsideHeader, setShowAsideHeader] = useState(false);
 
+  const { large } = useAppSelector((state) => state.responsive);
+
   useEffect(() => {
-    if (showAsideHeader) {
+    if (showAsideHeader && large) {
       BrowserUtils.LockScroll();
     } else {
       BrowserUtils.UnlockScroll();
@@ -26,14 +29,15 @@ export default function DashboardContent(props: DashboardContentProps) {
 
   return (
     <div className={styles.dashContentWrapper}>
-      <div className={classNames(styles.pageOverlay, {[styles.show]: showAsideHeader})} onClick={toggleAsideHeader}/>
-      <div className={classNames(styles.asideHeaderWrapper, {[styles.show]: showAsideHeader})}>
-        <AsideDashHeader toggleShow={toggleAsideHeader}/>
-      </div>
-      <div className={styles.innerContentWrapper}>
-        <TopDashHeader toggleAsideHeader={toggleAsideHeader}/>
-
-        {props.children}
+      <TopDashHeader toggleAsideHeader={toggleAsideHeader}/>
+      <div className={styles.content}>
+        <div className={classNames(styles.pageOverlay, {[styles.show]: showAsideHeader})} onClick={toggleAsideHeader}/>
+        <div className={classNames(styles.asideHeaderWrapper, {[styles.show]: showAsideHeader})}>
+          <AsideDashHeader toggleShow={toggleAsideHeader}/>
+        </div>
+        <div className={styles.innerContentWrapper}>
+          {props.children}
+        </div>
       </div>
     </div>
   )

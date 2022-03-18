@@ -1,6 +1,9 @@
 import { ResponsiveState, screenResized } from "../../features/responsive/responsiveSlice";
 import { store } from "../store";
 
+/**
+ * Responsive redux data store for different responsive css breakpoints
+ */
 export class Responsive {
     private _maxWidth = 1600;
     private _largeWidth = 1300;
@@ -20,6 +23,7 @@ export class Responsive {
     private testMobile(vw: number) {return vw <= this._mobileWidth}
     private testTiny(vw: number) {return vw <= this._tinyWidth}
 
+    /* initializes data store */
     public static Initialize() {
         return new Responsive();
     }

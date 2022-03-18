@@ -4,10 +4,15 @@ $asideHeaderTransitionDuration: .3s;
 $asideHeaderDesktopWidth: 25rem;
 
 .dashContentWrapper {
-    display: flex;
-    min-height: 100vh;
     position: relative;
-    justify-content: flex-end;
+    height: 100vh;
+    overflow: hidden;
+    
+    .content {
+        display: flex;
+        position: relative;
+        justify-content: flex-end;
+    }
 }
 
 .pageOverlay {
@@ -33,14 +38,16 @@ $asideHeaderDesktopWidth: 25rem;
     width: 100%;
     max-width: $asideHeaderDesktopWidth;
     position: fixed;
-    top: 0;
+    top: $dashboardHeadingHeight;
+    height: calc(100vh - #{$dashboardHeadingHeight});
     left: 0;
-    bottom: 0;
     background-color: white;
 
     @include largeVW() {
+        top: 0;
         left: auto;
         right: 0;
+        height: 100vh;
         z-index: $zIndexHeader + 1;
         transform: translateX(100%);
         transition: box-shadow $asideHeaderTransitionDuration, transform $asideHeaderTransitionDuration;
@@ -55,17 +62,17 @@ $asideHeaderDesktopWidth: 25rem;
 .innerContentWrapper {
     position: relative;
     width: calc(100% - #{$asideHeaderDesktopWidth});
-    padding: 0 2rem 2rem 2rem;
+    height: calc(100vh - #{$dashboardHeadingHeight});
+    padding: 2rem 2rem 2rem 2rem;
     z-index: $zIndexHeader - 1;
+    overflow: auto;
 
     @include largeVW() {
         width: 100%;
     }
 
     @include mobileVW() {
-        padding: 0 0 2rem 0;
-        width: 90vw;
+        padding: 2rem 5vw;
         flex-grow: unset;
-        margin: 0 auto;
     }
 }
