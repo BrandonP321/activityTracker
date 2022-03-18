@@ -1,3 +1,5 @@
+$mobileMaxWidth: 787px;
+
 @mixin maxVW () {
     @media screen and (max-width: 1600px) {
         @content;
@@ -17,7 +19,13 @@
 }
 
 @mixin mobileVW () {
-    @media screen and (max-width: 787px) {
+    @media screen and (max-width: $mobileMaxWidth) {
+        @content;
+    }
+}
+
+@mixin notMobileVW() {
+    @media screen and (min-width: $mobileMaxWidth) {
         @content;
     }
 }

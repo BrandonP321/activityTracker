@@ -10,12 +10,14 @@
 
 body {
     &.lock-scroll {
-        overflow: hidden;
+        // overflow: hidden;
     }
 }
 
 ::-webkit-scrollbar {
-    width: 0.75rem;
+    @include notMobileVW() {
+        width: .75rem;
+    }
 }
 
 ::-webkit-scrollbar-track {
