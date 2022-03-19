@@ -7,6 +7,7 @@ import { CreateActivityErrors, CreateActivityRequest, GetUserActivitiesErrors, G
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
 import { IUserDocument } from "@activitytracker/common/src/api/models/User.model";
 import { DBUpdateDoc, FoundDoc, MongooseUtils } from "~Utils/MongooseUtils";
+import { AddActivityToListController } from "./list.controllers";
 
 const { controllerWrapper, respondWithErr, respondWithUnexpectedErr } = ControllerUtils;
 
@@ -39,7 +40,21 @@ export const CreateActivityController: RouteController<CreateActivityRequest.Req
                     return respondWithUnexpectedErr(res, "Error adding new activity to user document");
                 }
 
-                res.json({ activityId: activityJSON.id }).end();
+                // if list id was provided, add activity to specified list
+                if (req.body.listId) {
+                    const newReq: any = {
+                        ...req,
+                        body: {
+                            listId: req.body.listId,
+                            activityId: activity.id
+                        }
+                    }
+
+                    return AddActivityToListController(newReq, res);
+                } else {
+                    res.json({ activityId: activityJSON.id }).end();
+                }
+
             })
     
         })

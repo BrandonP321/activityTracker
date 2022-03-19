@@ -24,3 +24,29 @@ export namespace CreateListErrors {
         })
     } as const;
 };
+
+export namespace AddActivityToListErrors {
+
+    export const ErrorCodes = {
+        ...BaseRequestErrorCodes,
+        ActivityNotFound: "ActivityNotFound",
+        ListNotFound: "ListNotFound",
+        UserNotInList: "UserNotInList",
+    } as const;
+
+    export const Errors = {
+        ...BaseRequestErrors,
+        ActivityNotFound: (params?: {}) => ({
+            status: ClientErrorStatusCodes.NotFound,
+            error: ErrorCodes.ActivityNotFound,
+        }),
+        ListNotFound: (params?: {}) => ({
+            status: ClientErrorStatusCodes.NotFound,
+            error: ErrorCodes.ListNotFound,
+        }),
+        UserNotInList: (params?: {}) => ({
+            status: ClientErrorStatusCodes.Forbidden,
+            error: ErrorCodes.UserNotInList,
+        }),
+    } as const;
+};
