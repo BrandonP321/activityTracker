@@ -4,9 +4,9 @@ import mongoose, { CallbackError } from "mongoose";
 import { RouteController } from "./index";
 import { ListUtils } from "@activitytracker/common/src/utils/ListUtils";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
-import { DBUpdateDoc } from "~Utils/MongooseUtils";
-import { CreateListErrors, CreateListRequest } from "@activitytracker/common/src/api/requests/list";
-import { IList } from "@activitytracker/common/src/api/models/List.model";
+import { DBUpdateDoc, FoundDoc, MongooseUtils } from "~Utils/MongooseUtils";
+import { AddActivityToListRequest, CreateListErrors, CreateListRequest, AddActivityToListErrors } from "@activitytracker/common/src/api/requests/list";
+import { IList, IListModel } from "@activitytracker/common/src/api/models/List.model";
 
 const { controllerWrapper, respondWithErr, respondWithUnexpectedErr } = ControllerUtils;
 
@@ -47,7 +47,44 @@ export const CreateListController: RouteController<CreateListRequest.Request, IA
 
                 res.json({ listId: listJSON.id }).end();
             })
-    
         })
+    })
+}
+
+export const AddActivityToListController: RouteController<AddActivityToListRequest.Request, IAuthJWTResLocals> = async (req, res) => {
+    const userId = res.locals?.user?.id;
+    const activityId = MongooseUtils.idStringToMongooseId(req.body.activityId);
+    const listId = MongooseUtils.idStringToMongooseId(req.body.listId);
+
+    if (!activityId) {
+        return respondWithErr(AddActivityToListErrors.Errors.ActivityNotFound(), res);
+    } else if (!listId) {
+        return respondWithErr(AddActivityToListErrors.Errors.ListNotFound(), res);
+    }
+
+    // get list of users for give list to verify that current user is a member of the list
+    db.List.findById(listId, async (err: CallbackError, list: FoundDoc<IListModel>) => {
+        if (err) {
+            return respondWithUnexpectedErr(res);
+        } else if (!list) {
+            return respondWithErr(AddActivityToListErrors.Errors.ListNotFound(), res);
+        }
+
+        // verify user adding activity is already a member of the List
+        const isUserInList = !!list.users?.find(u => u.toString() === userId.toString());
+
+        if (!isUserInList) {
+            return respondWithErr(AddActivityToListErrors.Errors.UserNotInList(), res);
+        }
+
+        // add activity id to List's arr of activities
+        const listActivities = list.activities ?? [];
+        listActivities.push(activityId);
+        list.activities = listActivities;
+
+        // save list db document
+        list.save();
+
+        res.json({ listId: req.body.listId }).end();
     })
 }

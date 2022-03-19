@@ -1,6 +1,6 @@
 import { CreateActivityRequest, GetUserActivitiesRequest } from "../requests/activity";
 import { LoginUserRequest, RegisterUserRequest } from "../requests/auth";
-import { CreateListRequest } from "../requests/list";
+import { AddActivityToListRequest, CreateListRequest } from "../requests/list";
 import { GetUserDashDataRequest, GetUserListsRequest, GetUserRequest } from "../requests/user/userRequests.types";
 
 /**
@@ -27,6 +27,7 @@ export const ActivityRoutes = {
 
 export const ListRoutes = {
     CreateList: (params?: CreateListRequest.Request["UrlParams"]) => `/api/list/create`,
+    AddActivityToList: (params?: AddActivityToListRequest.Request["UrlParams"]) => `/api/list/activity/add`,
 }
 
 
