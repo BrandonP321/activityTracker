@@ -1,7 +1,9 @@
 import { APIErrResponse } from "..";
 import { IBaseModelProperties } from "../../models";
-import { IList } from "../../models/List.model";
-import { AddActivityToListErrors, CreateListErrors } from "./listRequests.errors";
+import { IActivityFullResponse } from "../../models/Activity.model";
+import { IList, IListFullResponse, IPopulatedListFullResponse } from "../../models/List.model";
+import { IUserShallowResponse } from "../../models/User.model";
+import { AddActivityToListErrors, CreateListErrors, GetListErrors } from "./listRequests.errors";
 
 export namespace CreateListRequest {
 
@@ -43,4 +45,24 @@ export namespace AddActivityToListRequest {
     }
 
     export type ErrResponse = APIErrResponse<typeof AddActivityToListErrors.Errors>;
+};
+
+export namespace GetListRequest {
+
+    export interface Request {
+        UrlParams: {
+            listId: string;
+        }
+        ReqBody: {
+        }
+        ResBody: Omit<IPopulatedListFullResponse, "activities" | "users"> & {
+            activities: IActivityFullResponse[];
+            users: IUserShallowResponse[];
+        }
+        headers: {
+            
+        }
+    }
+
+    export type ErrResponse = APIErrResponse<typeof GetListErrors.Errors>;
 };

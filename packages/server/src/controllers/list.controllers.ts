@@ -5,7 +5,7 @@ import { RouteController } from "./index";
 import { ListUtils } from "@activitytracker/common/src/utils/ListUtils";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
 import { DBUpdateDoc, FoundDoc, MongooseUtils } from "~Utils/MongooseUtils";
-import { AddActivityToListRequest, CreateListErrors, CreateListRequest, AddActivityToListErrors } from "@activitytracker/common/src/api/requests/list";
+import { AddActivityToListRequest, CreateListErrors, CreateListRequest, AddActivityToListErrors, GetListRequest, GetListErrors } from "@activitytracker/common/src/api/requests/list";
 import { IList, IListModel } from "@activitytracker/common/src/api/models/List.model";
 
 const { controllerWrapper, respondWithErr, respondWithUnexpectedErr } = ControllerUtils;
@@ -47,6 +47,48 @@ export const CreateListController: RouteController<CreateListRequest.Request, IA
 
                 res.json({ listId: listJSON.id }).end();
             })
+        })
+    })
+}
+
+export const GetListController: RouteController<GetListRequest.Request, IAuthJWTResLocals> = async (req, res) => {
+    controllerWrapper(res, async () => {
+        const userId = res.locals.user?.id;
+
+        db.List.findById(req.params.listId, async (err: CallbackError, list: FoundDoc<IListModel>) => {
+            if (err) {
+                return respondWithUnexpectedErr(res, "Error getting list from db");
+            } else if (!list) {
+                return respondWithErr(GetListErrors.Errors.ListNotFound(), res);
+            }
+
+            // make sure user getting list is a member of the list already
+            const isUserInList = !!list.users?.find(u => u?.toString() === userId.toString());
+
+            if (!isUserInList) {
+                return respondWithErr(GetListErrors.Errors.UserNotInList(), res);
+            }
+
+            // populate user and activity fields for List
+            const populatedList = await list.populateList();
+
+            if (!populatedList) {
+                return respondWithUnexpectedErr(res, "Error populating list data");
+            }
+
+            // convert user & activity arrays to response JSON's
+            const listUsers = await Promise.all(populatedList.users?.map(u => u?.toShallowUserJSON()));
+            const listActivities = await Promise.all(populatedList.activities?.map(u => u?.toActivityJSON()));
+
+            const listJSON = await populatedList.toListJSON();
+
+            const listResponse: GetListRequest.Request["ResBody"] = {
+                ...listJSON,
+                users: listUsers,
+                activities: listActivities
+            }
+
+            res.json(listResponse).end();
         })
     })
 }

@@ -1,6 +1,6 @@
 import mongoose, { NativeError, Schema as ISchema } from "mongoose";
 import type { IListDocument, IListMethods, IListModel } from "@activitytracker/common/src/api/models/List.model";
-import { toListJSON } from "./listMethods";
+import { populateList, toListJSON } from "./listMethods";
 
 const { Schema } = mongoose;
 
@@ -40,7 +40,8 @@ const ListSchema: ISchema<IListDocument, IListModel, IListDocument> = new Schema
 
 const listMethods: typeof ListSchema.methods & IListMethods = {
     ...ListSchema.methods,
-    toListJSON
+    toListJSON,
+    populateList,
 }
 
 ListSchema.methods = listMethods;

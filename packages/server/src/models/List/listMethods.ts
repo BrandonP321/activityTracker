@@ -1,4 +1,4 @@
-import { IListDocument, IListFullResponse, IListModel, TToListJSON } from "@activitytracker/common/src/api/models/List.model";
+import { IListDocument, IListFullResponse, IListModel, IPopulatedListModel, TPopulateList, TToListJSON } from "@activitytracker/common/src/api/models/List.model";
 
 /**
  * INSTANCE METHODS
@@ -16,6 +16,18 @@ export const toListJSON: TToListJSON = async function(this: IListModel) {
     }
 
     return userJSON;
+}
+
+/* populates users & activities on List model */
+export const populateList: TPopulateList = async function(this: IListModel) {
+    try {
+        const populated: IPopulatedListModel = await this.populate(["users", "activities"]);
+
+        return populated;
+    } catch(err) {
+        console.log(err);
+        return undefined;
+    }
 }
 
 // export type IActivityDocSaveErr = ValidErrRes<RegisterUserRequest.ErrResponse["response"]["data"]> | undefined

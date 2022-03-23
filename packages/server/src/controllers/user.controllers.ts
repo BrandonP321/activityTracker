@@ -75,13 +75,13 @@ export const GetUserListsController: RouteController<GetUserListsRequest.Request
 
             const populatedUser = await user.populateUserLists();
 
-            const userJSON = await populatedUser?.toFullUserJSON();
-
-            if (!userJSON) {
-                return respondWithUnexpectedErr(res, "Error populating lists data");
+            if (!populatedUser) {
+                return respondWithUnexpectedErr(res, "Error populating list data");
             }
 
-            res.json({ lists: userJSON.lists })
+            const populatedLists = await Promise.all(populatedUser?.lists?.map(l => l.toListJSON()));
+
+            res.json({ lists: populatedLists })
         })
     })
 }

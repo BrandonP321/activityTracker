@@ -50,3 +50,24 @@ export namespace AddActivityToListErrors {
         }),
     } as const;
 };
+
+export namespace GetListErrors {
+
+    export const ErrorCodes = {
+        ...BaseRequestErrorCodes,
+        ListNotFound: "ListNotFound",
+        UserNotInList: "UserNotInList",
+    } as const;
+
+    export const Errors = {
+        ...BaseRequestErrors,
+        ListNotFound: (params?: {}) => ({
+            status: ClientErrorStatusCodes.NotFound,
+            error: ErrorCodes.ListNotFound,
+        }),
+        UserNotInList: (params?: {}) => ({
+            status: ClientErrorStatusCodes.Forbidden,
+            error: ErrorCodes.UserNotInList,
+        }),
+    } as const;
+};
