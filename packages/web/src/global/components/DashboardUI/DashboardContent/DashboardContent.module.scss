@@ -38,10 +38,11 @@ $asideHeaderDesktopWidth: 25rem;
     width: 100%;
     max-width: $asideHeaderDesktopWidth;
     position: fixed;
-    top: $dashboardHeadingHeight;
-    height: calc(100vh - #{$dashboardHeadingHeight});
+    // top: $dashboardHeadingHeight;
+    top: 0;
+    bottom: 0;
+    // height: calc(100vh - #{$dashboardHeadingHeight});
     left: 0;
-    background-color: white;
 
     @include largeVW() {
         top: 0;
@@ -62,17 +63,22 @@ $asideHeaderDesktopWidth: 25rem;
 .innerContentWrapper {
     position: relative;
     width: calc(100% - #{$asideHeaderDesktopWidth});
-    height: calc(100vh - #{$dashboardHeadingHeight});
-    padding: 2rem 2rem 2rem 2rem;
+    height: 100vh;
     z-index: $zIndexHeader - 1;
-    overflow: auto;
-
+    background-color: $colorBgDarker;
+    
     @include largeVW() {
         width: 100%;
     }
+    
+    .scrollWrapper {
+        position: relative;
+        height: calc(100% - #{$dashboardHeadingHeight});
+        padding: 2rem 2rem 2rem 2rem;
+        overflow: auto;
 
-    @include mobileVW() {
-        padding: 2rem 5vw;
-        flex-grow: unset;
+        @include mobileVW() {
+            padding: 2rem 5vw;
+        }
     }
 }

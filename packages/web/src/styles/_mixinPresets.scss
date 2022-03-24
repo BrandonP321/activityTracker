@@ -1,0 +1,35 @@
+// @mixin listRowPreset($boxShadowSize: 1rem) {
+//     box-shadow: 
+//         0 0 $boxShadowSize -0rem rgba(0, 0, 0, .075),
+//         inset 0 0 0rem 0 rgba(0, 0, 0, .075);
+//     cursor: pointer;
+//     transition: box-shadow .1s;
+
+//     &:hover {
+//         box-shadow: 
+//             0 0 0rem -0rem rgba(0, 0, 0, .075),
+//             inset 0 0 $boxShadowSize 0 rgba(0, 0, 0, .075);
+//     }
+// }
+
+@mixin listRowPreset($backgroundTransition: 0s, $hoverOpacity: 1, $gradient: $gradientBtnGray) {
+    cursor: pointer;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: $gradient;
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity $backgroundTransition;
+    }
+
+    &:hover::before {
+        opacity: $hoverOpacity;
+    }
+}

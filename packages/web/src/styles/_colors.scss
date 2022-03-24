@@ -5,23 +5,47 @@ $baseColorDodgerBlue: #1b8be3;
 $baseColorGold: #ffa427;
 $baseColorPurple: #be1de7;
 
+@function CrimsonHSL($lightness: 55%) {
+    @return hsl(346, 86%, $lightness);
+}
+
+@function SlateBlueHSL($lightness: 65%) {
+    @return hsl(246, 96%, $lightness);
+}
+
+@function DodgerBlueHSL($lightness: 50%) {
+    @return hsl(206, 79%, $lightness);
+}
+
+@function GoldHSL($lightness: 58%) {
+    @return hsl(35, 100%, $lightness);
+}
+
 // SITE COLORS
-$colorFadedRed: rgba($baseColorCrimson, .5);
-$colorFadedPurple: rgba($baseColorSlateBlue, .5);
-$colorFadedBlue: rgba($baseColorDodgerBlue, .5);
-$colorFadedGold: rgba($baseColorGold, .5);
+$colorFadedRed: #fcd5de;
+$colorFadedPurple: rgb(176, 168, 255);
+$colorFadedBlue: #d1e8f9;
+$colorFadedGold: #ffedd4;
+$colorBgDark: #13161a;
+$colorBgDarker: #010409;
+$colorTextPrimary: white;
 
 // GRADIENTS
 $gradientBtnPurple: linear-gradient(
     to bottom, 
-    rgba($baseColorPurple, .65),
+    #d369ef,
     $baseColorPurple
+);
+$gradientBtnGray: linear-gradient(
+    to bottom, 
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2),
 );
 $colorBtnHover: rgba(0, 0, 0, .1);
 
 // TEXT
-$colorLinkActive: rgba(0, 0, 0, .4);
-$colorLinkHover: rgba(0, 0, 0, .6);
+$colorLinkActive: rgba($colorTextPrimary, .4);
+$colorLinkHover: rgba($colorTextPrimary, .6);
 
 @mixin LinkBtnColor() {
     color: $colorLinkActive;

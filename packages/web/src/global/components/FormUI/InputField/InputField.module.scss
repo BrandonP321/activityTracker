@@ -1,7 +1,8 @@
 @import "../../../../styles/uiBase.scss";
 
 $inputLeftPadding: .75rem;
-$inputBorderColor: rgb(194, 194, 194);
+$inputBorderColor: rgb(58, 58, 58);
+$inputBorderColorFocused: $baseColorPurple;
 
 .inputContentWrapper {
 
@@ -14,13 +15,13 @@ $inputBorderColor: rgb(194, 194, 194);
     transition: all .2s;
 
     &.focused {
-        border-color: black;
+        border-color: $inputBorderColorFocused;
 
         .placeholder {
             top: 0;
             font-size: 1rem;
             line-height: 1.5rem;
-            color: rgb(58, 58, 58);
+            color: rgba($colorTextPrimary, .6);
         }
     }
 }
@@ -45,7 +46,7 @@ $inputBorderColor: rgb(194, 194, 194);
     top: 50%;
     left: 0;
     margin-left: $inputLeftPadding;
-    background-color: white;
+    background-color: $colorBgDarker;
     border-radius: inherit;
     transform: translateY(-50%);
     color: $inputBorderColor;

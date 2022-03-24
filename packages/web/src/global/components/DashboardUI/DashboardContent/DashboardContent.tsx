@@ -29,14 +29,16 @@ export default function DashboardContent(props: DashboardContentProps) {
 
   return (
     <div className={styles.dashContentWrapper}>
-      <TopDashHeader toggleAsideHeader={toggleAsideHeader}/>
       <div className={styles.content}>
         <div className={classNames(styles.pageOverlay, {[styles.show]: showAsideHeader})} onClick={toggleAsideHeader}/>
         <div className={classNames(styles.asideHeaderWrapper, {[styles.show]: showAsideHeader})}>
           <AsideDashHeader toggleShow={toggleAsideHeader}/>
         </div>
         <div className={styles.innerContentWrapper}>
-          {props.children}
+          <TopDashHeader toggleAsideHeader={toggleAsideHeader}/>
+          <div className={styles.scrollWrapper}>
+            {props.children}
+          </div>
         </div>
       </div>
     </div>

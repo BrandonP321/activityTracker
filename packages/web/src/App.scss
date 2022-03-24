@@ -5,10 +5,13 @@
 }
 
 .App {
-
+    
 }
 
 body {
+    color: $colorTextPrimary;
+    background-color: $colorBgDarker;
+    
     &.lock-scroll {
         // overflow: hidden;
     }

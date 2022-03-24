@@ -2,15 +2,15 @@
 
 $listLeftPadding: 2rem;
 
-@mixin quickStatColors($color) {
-    background-color: rgba($color, .2);
+@mixin quickStatColors($fadedColor, $hoverColor, $iconColor) {
+    background-color: $fadedColor;
         
     &:hover {
-        background-color: rgba($color, .35);
+        background-color: $hoverColor
     }
 
     .hexagonIcon {
-        color: $color;
+        color: $iconColor;
     }
 }
 
@@ -38,7 +38,11 @@ $listLeftPadding: 2rem;
     border-radius: 1rem;
     cursor: pointer;
     text-align: center;
-    transition: background-color .2s;
+    transition: background-color .2s, transform .2s;
+
+    &:hover {
+        transform: translateY(-0.25rem);
+    }
 
     @include mediumVW() {
         width: calc(25% - .75rem);
@@ -69,6 +73,7 @@ $listLeftPadding: 2rem;
         flex-direction: column;
         justify-content: space-between;
         flex-grow: 1;
+        text-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.25);
     }
 
     &:last-child {
@@ -76,19 +81,19 @@ $listLeftPadding: 2rem;
     }
 
     &:nth-child(1) {
-        @include quickStatColors($baseColorSlateBlue)
+        @include quickStatColors(SlateBlueHSL(82%), SlateBlueHSL(75%), $baseColorSlateBlue)
     }
 
     &:nth-child(2) {
-        @include quickStatColors($baseColorCrimson)
+        @include quickStatColors(CrimsonHSL(80%), CrimsonHSL(75%), $baseColorCrimson)
     }
 
     &:nth-child(3) {
-        @include quickStatColors($baseColorDodgerBlue);
+        @include quickStatColors(DodgerBlueHSL(70%), DodgerBlueHSL(65%), $baseColorDodgerBlue);
     }
 
     &:nth-child(4) {
-        @include quickStatColors($baseColorGold);
+        @include quickStatColors(GoldHSL(75%), GoldHSL(70%), $baseColorGold);
     }
     
     .statTitle {
@@ -151,7 +156,16 @@ $listLeftPadding: 2rem;
     .listsWrapper,
     .activitiesWrapper {
         box-shadow: $sectionBlockShadow;
+        border: 2px solid #222;
         border-radius: 1.5rem;
+
+        .listItem {
+            @include listRowPreset();
+
+            * {
+                position: relative;
+            }
+        }
     }
 
     .listHeading {
@@ -164,35 +178,20 @@ $listLeftPadding: 2rem;
         }
     }
 
-    
     .listsWrapper {
         width: calc(60% - 1rem);
         
         .listItem {
             
-            &:not(.selected):hover {
-                background-color: $colorBtnHover;
-            }
-            
             &.selected {
-                transition: color 0s;
+                @include listRowPreset(0s, 1, $gradientBtnPurple);
                 background: $gradientBtnPurple;
-                color: white;
             }
         }
     }
     
     .activitiesWrapper {
         width: calc(40% - 1rem);
-        
-        .listItem {
-            display: flex;
-            justify-content: space-between;
-            
-            &:hover {
-                background-color: $colorBtnHover;
-            }
-        }
     }
     
     @include mediumVW() {
@@ -212,11 +211,6 @@ $listLeftPadding: 2rem;
         padding: 1rem $listLeftPadding;
         border-radius: inherit;
         cursor: pointer;
-        transition: all .1s;
-        
-        &:hover {
-            box-shadow: 0 0 1rem -0.25rem rgba(0, 0, 0, .05);
-        }
     }
 }
 

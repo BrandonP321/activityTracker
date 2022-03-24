@@ -3,10 +3,18 @@
 .login {
 
     .loginFormWrapper {
-        width: 40rem;
+        width: 90%;
+        max-width: 40rem;
         margin: 10rem auto;
         padding: 3rem;
         border-radius: 2rem;
+
+        @include mobileVW() {
+            margin: 2.5vh auto;
+            padding: 2rem 1rem;
+            border-radius: 1rem;
+            min-height: 95vh;
+        }
     }
 
     .formToggleLink {

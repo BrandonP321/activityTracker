@@ -11,10 +11,10 @@ type AsideDashHeaderProps = {
 }
 
 const navLinks = [
-  { title: "Dashboard", url: RouteHelper.UserDashboard(), icon: faCubes },
-  { title: "My Lists", url: RouteHelper.DashboardLists(), icon: faList },
-  { title: "My Activities", url: RouteHelper.DashboardActivities(), icon: faPersonRunning },
-  { title: "Friends", url: RouteHelper.DashboardFriends(), icon: faUsers },
+  { title: "Dashboard", url: RouteHelper.UserDashboard(), icon: faCubes, regex: /Dashboard$/ }, // /Dashboard
+  { title: "My Lists", url: RouteHelper.DashboardLists(), icon: faList }, // /Dashboard/Lists
+  { title: "My Activities", url: RouteHelper.DashboardActivities(), icon: faPersonRunning }, // /Dashboard/Activities
+  { title: "Friends", url: RouteHelper.DashboardFriends(), icon: faUsers }, //Dashboard/Friends
 ];
 
 export default function AsideDashHeader(props: AsideDashHeaderProps) {
@@ -33,7 +33,9 @@ export default function AsideDashHeader(props: AsideDashHeaderProps) {
             windowPath = windowPath.split("").slice(0, windowPath.length - 1).join("");
           }
 
-          const isActiveLink = windowPath === link.url;
+          const pathRegex = link.regex ?? new RegExp(link.url, "gi");
+
+          const isActiveLink = pathRegex.test(windowPath);
 
           return (
             <Link
