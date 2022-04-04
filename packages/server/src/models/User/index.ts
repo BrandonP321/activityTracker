@@ -1,12 +1,10 @@
-import mongoose, { NativeError, Schema as ISchema } from "mongoose";
+import mongoose, { NativeError, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { RegexUtils } from "@activitytracker/common/src/utils/RegexUtils";
-import type { IUser, IUserDocument, IUserMethods, IUserModel } from "@activitytracker/common/src/api/models/User.model";
-import { generateAccessToken, generateRefreshToken, handleUserDocSaveErr, populateUserActivities, populateUserLists, toFullUserJSON, toPopulatedUserJSON, toShallowUserJSON, validatePassword } from "./userMethods";
+import type { UserModel } from "@activitytracker/common/src/api/models/User.model";
+import { handleUserDocSaveErr, userMethods } from "./userMethods";
 
-const { Schema } = mongoose;
-
-const UserSchema: ISchema<IUserDocument, IUserModel, IUserDocument> = new Schema({
+const UserSchema = new Schema<UserModel.User, UserModel.Model, UserModel.InstanceMethods, UserModel.QueryHelpers>({
     email: {
         type: String,
         lowercase: true,
@@ -58,15 +56,6 @@ const UserSchema: ISchema<IUserDocument, IUserModel, IUserDocument> = new Schema
     },
 }, { timestamps: true })
 
-
-// PLUGINS
-
-/* plugin for error handling of unique fields on schema */
-// UserSchema.plugin(uniqueValidator, { message: "{PATH} is already taken." })
-
-
-// MIDDLEWARE
-
 /* hash password before storing it */
 UserSchema.pre("save", async function save(next) {
     if (!this.isModified("password")) return next();
@@ -87,18 +76,9 @@ UserSchema.pre("save", async function save(next) {
 /* handles any errors when new User document can't be created */
 UserSchema.post("save", handleUserDocSaveErr);
 
-const userMethods: typeof UserSchema.methods & IUserMethods = {
+UserSchema.methods = {
     ...UserSchema.methods,
-    validatePassword,
-    generateAccessToken,
-    generateRefreshToken,
-    toShallowUserJSON,
-    toFullUserJSON,
-    populateUserActivities,
-    toPopulatedUserJSON,
-    populateUserLists
-}
+    ...userMethods
+};
 
-UserSchema.methods = userMethods;
-
-export const User = mongoose.model<IUserDocument, IUserModel>("User", UserSchema)
+export const User = mongoose.model<UserModel.User, UserModel.Model>("User", UserSchema)

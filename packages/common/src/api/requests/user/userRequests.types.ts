@@ -1,6 +1,6 @@
 import { APIErrResponse } from "..";
-import { IListFullResponse } from "../../models/List.model";
-import { IPopulatedUserFullResponse, IUserFullResponse } from "../../models/User.model";
+import { ListModel } from "../../models/List.model";
+import { UserModel } from "../../models/User.model";
 import { GetUserDashDataErrors, GetUserErrors } from "./userRequests.errors";
 
 export namespace GetUserRequest {
@@ -13,7 +13,7 @@ export namespace GetUserRequest {
             
         }
         ResBody: {
-        } & IUserFullResponse
+        } & UserModel.FullResponseJSON
         headers: {
             
         }
@@ -38,7 +38,7 @@ export namespace GetUserDashDataRequest {
                 savedActivitiesCount: number;
                 friendsCount: number;
             }
-        } & IPopulatedUserFullResponse
+        } & UserModel.AllPopulatedFullResponseJSON
         headers: {
             
         }
@@ -57,7 +57,7 @@ export namespace GetUserListsRequest {
             
         }
         ResBody: {
-            lists: IListFullResponse[];
+            lists: ListModel.FullResponseJSON[];
         }
         headers: {
             

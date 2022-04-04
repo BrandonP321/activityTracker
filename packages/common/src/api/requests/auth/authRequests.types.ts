@@ -1,5 +1,5 @@
 import { APIErrResponse } from "..";
-import { IUserShallowResponse } from "../../models/User.model";
+import { UserModel } from "../../models/User.model";
 import { LoginUserErrors, RegisterUserErrors } from "./authRequests.errors";
 
 export namespace RegisterUserRequest {
@@ -17,7 +17,7 @@ export namespace RegisterUserRequest {
             phone?: string;
         }
         ResBody: {
-        } & IUserShallowResponse
+        } & UserModel.ShallowResponseJSON
         headers: {
 
         }
@@ -37,7 +37,7 @@ export namespace LoginUserRequest {
         }
         ResBody: {
 
-        } & IUserShallowResponse,
+        } & UserModel.ShallowResponseJSON,
         headers: {
 
         }

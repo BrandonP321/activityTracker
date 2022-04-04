@@ -2,7 +2,7 @@ import db from "~Models";
 import { RouteController } from "~Controllers";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
 import { NativeError, CallbackError } from "mongoose";
-import { IUserDocument, IUserModel } from "@activitytracker/common/src/api/models/User.model";
+import { UserModel } from "@activitytracker/common/src/api/models/User.model";
 import { ControllerUtils } from "~Utils/ControllerUtils";
 import { GetUserDashDataRequest, GetUserErrors, GetUserListsErrors, GetUserListsRequest, GetUserRequest } from "@activitytracker/common/src/api/requests/user";
 import { FoundDoc } from "~Utils/MongooseUtils";
@@ -11,7 +11,7 @@ const { respondWithErr, respondWithUnexpectedErr, controllerWrapper } = Controll
 
 export const GetUserController: RouteController<GetUserRequest.Request, {}> = async (req, res) => {
     controllerWrapper(res, async () => {
-        db.User.findById(req.params.id, async (err: NativeError, user: IUserModel | null) => {
+        db.User.findById(req.params.id, async (err: NativeError, user: FoundDoc<UserModel.Document>) => {
             if (err) {
                 return respondWithUnexpectedErr(res, "Error finding user");
             } else if (!user) {
@@ -33,7 +33,7 @@ export const GetUserDashDataController: RouteController<GetUserDashDataRequest.R
     controllerWrapper(res, async () => {
         const userId = res.locals.user?.id;
 
-        db.User.findById(userId, async (err: NativeError, user: IUserModel | null) => {
+        db.User.findById(userId, async (err: NativeError, user: FoundDoc<UserModel.Document>) => {
             if (err) {
                 return respondWithUnexpectedErr(res, "Error finding user");
             } else if (!user) {
@@ -41,7 +41,8 @@ export const GetUserDashDataController: RouteController<GetUserDashDataRequest.R
             }
 
             // populate all fields on user doc
-            const populatedJSON = await user.toPopulatedUserJSON(3);
+            const populatedDoc = await user.populateAllFields();
+            const populatedJSON = await populatedDoc?.toFullUserJSON();
 
             if (!populatedJSON) {
                 return respondWithUnexpectedErr(res, "Error populating user data");
@@ -66,7 +67,7 @@ export const GetUserListsController: RouteController<GetUserListsRequest.Request
     controllerWrapper(res, async () => {
         const userId = res.locals.user?.id;
 
-        db.User.findById(userId, async (err: CallbackError, user: FoundDoc<IUserModel>) => {
+        db.User.findById(userId, async (err: CallbackError, user: FoundDoc<UserModel.Document>) => {
             if (err) {
                 return respondWithUnexpectedErr(res, "Error retrieving user data");
             } else if (!user) {

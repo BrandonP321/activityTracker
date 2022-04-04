@@ -1,45 +1,40 @@
 import mongoose, { Model } from "mongoose";
-import { IBaseModelProperties } from ".";
+import { BaseModelDocProps, ModelRefFields, ResponseJSON, TDocument, TModel } from ".";
 
-/* properties on activity model */
-export type IActivity = IBaseModelProperties & {
-    name: string;
-    tags: string[];
-    price: number | null;
-    numbPeople: {
-        amount: number | null;
-        orLess: boolean;
-        orMore: boolean;
+type ActivityRefFieldTypes = ModelRefFields<{
+
+}>
+
+export namespace ActivityModel {
+
+    export type Activity<RefFields extends ActivityRefFieldTypes = {}> = BaseModelDocProps & {
+        name: string;
+        tags: string[];
+        price: number | null;
+        numbPeople: {
+            amount: number | null;
+            orLess: boolean;
+            orMore: boolean;
+        }
+        location: string | null;
+        url: string | null;
+        creatorId: string;
     }
-    location: string | null;
-    url: string | null;
-    creatorId: string;
+
+    export type Document<RefFields extends ActivityRefFieldTypes = {}> = TDocument<Activity<RefFields>, QueryHelpers, InstanceMethods<RefFields>>;
+    
+    export type Model<RefFields extends ActivityRefFieldTypes = {}> = TModel<Document<RefFields>, QueryHelpers, InstanceMethods<RefFields>>
+
+    /* Activity model when all fields have been populated */
+    export type AllPopulatedDoc = Document<{  }>;
+
+    export type InstanceMethods<RefFields extends ActivityRefFieldTypes = {}> = {
+        toActivityJSON: () => Promise<FullResponseJSON<RefFields>>;
+    }
+
+    export type QueryHelpers = {
+    }
+
+    export type FullResponseJSON<RefFields extends ActivityRefFieldTypes = {}> = ResponseJSON<Activity<RefFields>>
+    export type AllPopulatedFullResponseJSON = FullResponseJSON<{  }>
 }
-
-export interface IActivityMethods {
-    toActivityJSON: TToActivityJSON;
-}
-
-/* instance methods of activity Model */
-export type IActivityDocument = mongoose.Document & IActivityMethods & IActivity
-
-/* static methods for activity Schema */
-export type IActivityModel = Model<IActivityDocument, {}, IActivityMethods> & IActivityDocument & IActivity;
-
-/* properties sent to client when client only needs basic info to display for activity */
-export interface IActivityShallowResponse {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface IActivityFullResponse extends Omit<IActivity, "_id"> {
-    id: string;
-}
-
-// INSTANCE METHODS
-
-export type TToActivityJSON = () => Promise<IActivityFullResponse>;
-// export type TPopulateChats = () => Promise<TToShallowChatJSONResponse[]>;
-
-// STATIC METHODS

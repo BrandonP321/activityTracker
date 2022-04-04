@@ -1,47 +1,37 @@
-import mongoose, { Model } from "mongoose";
-import { IBaseModelProperties } from ".";
-import { IActivityModel } from "./Activity.model";
-import { IUserModel } from "./User.model";
+import mongoose, {} from "mongoose";
+import { BaseModelDocProps, ModelRefFields, ModelRefFieldType, PopulatedConditionalType, ResponseJSON, TDocument, TModel, TObjectId } from ".";
+import { ActivityModel } from "./Activity.model";
+import { UserModel } from "./User.model";
 
-/* properties on List model */
-export type IList<isPopulated = false> = IBaseModelProperties & {
-    name: string;
-    creatorId: string;
-    activities: isPopulated extends true ? IActivityModel[] : mongoose.Types.ObjectId[];
-    users: isPopulated extends true ? IUserModel[] : mongoose.Types.ObjectId[];
+type ListRefFieldTypes = ModelRefFields<{
+    TActivities: TObjectId | ActivityModel.Document | ActivityModel.FullResponseJSON;
+    TUsers: TObjectId | UserModel.Document | UserModel.FullResponseJSON | UserModel.ShallowResponseJSON;
+}>
+
+export namespace ListModel {
+
+    export type List<RefFields extends ListRefFieldTypes = {}> = BaseModelDocProps & {
+        name: string;
+        creatorId: string;
+        activities: ModelRefFieldType<RefFields, "TActivities">[];
+        users: ModelRefFieldType<RefFields, "TUsers">[];
+    }
+
+    export type Document<RefFields extends ListRefFieldTypes = {}> = TDocument<List<RefFields>, QueryHelpers, InstanceMethods<RefFields>>;
+    
+    export type Model<RefFields extends ListRefFieldTypes = {}> = TModel<Document<RefFields>, QueryHelpers, InstanceMethods<RefFields>>
+
+    /* List model when all fields have been populated */
+    export type AllPopulatedDoc = Document<{ TUsers: UserModel.Document; TActivities: ActivityModel.Document; }>;
+
+    export type InstanceMethods<RefFields extends ListRefFieldTypes = {}> = {
+        toListJSON: () => Promise<PopulatedConditionalType<RefFields["TActivities"], AllPopulatedFullResponseJSON, FullResponseJSON>>;
+        populateAllFields: PopulatedConditionalType<RefFields["TActivities"], undefined, () => Promise<AllPopulatedDoc | undefined>>;
+    }
+
+    export type QueryHelpers = {
+    }
+
+    export type FullResponseJSON<RefFields extends ListRefFieldTypes = {}> = ResponseJSON<List<RefFields>>
+    export type AllPopulatedFullResponseJSON = FullResponseJSON<{ TActivities: ActivityModel.FullResponseJSON; TUsers: UserModel.ShallowResponseJSON }>
 }
-
-export interface IListMethods<isPopulated = false> {
-    toListJSON: isPopulated extends true ? TToPopulatedListJSON : TToListJSON;
-    populateList: TPopulateList;
-}
-
-/* instance methods of List Model */
-export type IListDocument<isPopulated = false> = mongoose.Document & IListMethods<isPopulated> & IList<isPopulated>
-
-/* static methods for List Schema */
-export type IListModel<isPopulated = false> = Model<IListDocument<isPopulated>, {}, IListMethods<isPopulated>> & IListDocument<isPopulated> & IList<isPopulated>;
-
-/* List model after users & activities have been populated */
-export type IPopulatedListModel = IListModel<true>
-
-/* properties sent to client when client only needs basic info to display for List */
-export interface IListShallowResponse {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface IListFullResponse<isPopulated = false> extends Omit<IList<isPopulated>, "_id"> {
-    id: string;
-}
-
-export type IPopulatedListFullResponse = IListFullResponse<true>;
-
-// INSTANCE METHODS
-
-export type TToListJSON = () => Promise<IListFullResponse>;
-export type TToPopulatedListJSON = () => Promise<IPopulatedListFullResponse>;
-export type TPopulateList = () => Promise<IPopulatedListModel | undefined>
-
-// STATIC METHODS

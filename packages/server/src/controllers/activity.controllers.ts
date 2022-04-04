@@ -5,7 +5,7 @@ import { RouteController } from "./index";
 import { ActivityUtils } from "@activitytracker/common/src/utils/ActivityUtils";
 import { CreateActivityErrors, CreateActivityRequest, GetUserActivitiesErrors, GetUserActivitiesRequest } from "@activitytracker/common/src/api/requests/activity";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
-import { IUserDocument } from "@activitytracker/common/src/api/models/User.model";
+import { UserModel } from "@activitytracker/common/src/api/models/User.model";
 import { DBUpdateDoc, FoundDoc, MongooseUtils } from "~Utils/MongooseUtils";
 import { AddActivityToListController } from "./list.controllers";
 
@@ -65,14 +65,14 @@ export const GetUserActivitiesController: RouteController<GetUserActivitiesReque
     controllerWrapper(res, async () => {
         const userId = res.locals?.user?.id;
         
-        db.User.findById(userId, async (err: CallbackError, user: FoundDoc<IUserDocument>) => {
+        db.User.findById(userId, async (err: CallbackError, user: FoundDoc<UserModel.Document>) => {
             if (err) {
                 return respondWithUnexpectedErr(res, "Error finding user in database");
             } else if (!user) {
                 return respondWithErr(GetUserActivitiesErrors.Errors.UserNotFound(), res);
             }
 
-            const populated = await user.populateUserActivities();
+            const populated = await user.populateActivities();
 
             if (!populated) {
                 return respondWithUnexpectedErr(res, "Error populating data for user's activities");

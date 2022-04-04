@@ -1,7 +1,7 @@
 import { APIErrResponse } from "..";
-import { IBaseModelProperties } from "../../models";
-import { IActivity, IActivityFullResponse, TToActivityJSON } from "../../models/Activity.model";
-import { IPopulatedUserModel } from "../../models/User.model";
+import { BaseModelDocProps } from "../../models";
+import { ActivityModel } from "../../models/Activity.model";
+import {  } from "../../models/User.model";
 import { AddActivityToListRequest } from "../list";
 import { CreateActivityErrors } from "./activityRequests.errors";
 
@@ -14,7 +14,7 @@ export namespace CreateActivityRequest {
         ReqBody: {
             /* optional list id if activity is also being added to a List on creation */
             listId?: string;
-        } & Omit<IActivity, keyof IBaseModelProperties>
+        } & ActivityModel.FullResponseJSON
         ResBody: {
             activityId: string;
         } | {
@@ -39,8 +39,8 @@ export namespace GetUserActivitiesRequest {
             userId: string;
         }
         ResBody: {
-            userActivities: IActivityFullResponse[];
-            savedActivities: IActivityFullResponse[];
+            userActivities: ActivityModel.FullResponseJSON[];
+            savedActivities: ActivityModel.FullResponseJSON[];
         }
         headers: {
             

@@ -1,10 +1,10 @@
 import mongoose, { NativeError, Schema as ISchema } from "mongoose";
-import type { IListDocument, IListMethods, IListModel } from "@activitytracker/common/src/api/models/List.model";
-import { populateList, toListJSON } from "./listMethods";
+import type { ListModel } from "@activitytracker/common/src/api/models/List.model";
+import { populateAllFields, toListJSON } from "./listMethods";
 
 const { Schema } = mongoose;
 
-const ListSchema: ISchema<IListDocument, IListModel, IListDocument> = new Schema({
+const ListSchema = new Schema<ListModel.List, ListModel.Model, ListModel.InstanceMethods, ListModel.QueryHelpers>({
     name: {
         type: String,
         required: [true, "List name required"],
@@ -29,21 +29,16 @@ const ListSchema: ISchema<IListDocument, IListModel, IListDocument> = new Schema
 
 // PLUGINS
 
-
 // MIDDLEWARE
 
-// ListSchema.pre("save", async function save(next) {
-// });
-
-/* handles any errors when new Activity document can't be created */
-// ListSchema.post("save", handleUserDocSaveErr);
-
-const listMethods: typeof ListSchema.methods & IListMethods = {
-    ...ListSchema.methods,
+const listMethods: Required<ListModel.InstanceMethods> = {
     toListJSON,
-    populateList,
+    populateAllFields,
 }
 
-ListSchema.methods = listMethods;
+ListSchema.methods = {
+    ...ListSchema.methods,
+    ...listMethods
+};
 
-export const List = mongoose.model<IListDocument, IListModel>("List", ListSchema)
+export const List = mongoose.model<ListModel.List, ListModel.Model>("List", ListSchema)

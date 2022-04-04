@@ -6,7 +6,7 @@ export namespace GetUserErrors {
 
     export const ErrorCodes = {
         ...BaseRequestErrorCodes,
-        UserNotFound: RequestErrors.InvalidId,
+        UserNotFound: "UserNotFound",
     } as const;
 
     export const Errors = {

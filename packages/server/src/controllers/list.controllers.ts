@@ -6,7 +6,7 @@ import { ListUtils } from "@activitytracker/common/src/utils/ListUtils";
 import { IAuthJWTResLocals } from "~Middleware/authJWT.middleware";
 import { DBUpdateDoc, FoundDoc, MongooseUtils } from "~Utils/MongooseUtils";
 import { AddActivityToListRequest, CreateListErrors, CreateListRequest, AddActivityToListErrors, GetListRequest, GetListErrors } from "@activitytracker/common/src/api/requests/list";
-import { IList, IListModel } from "@activitytracker/common/src/api/models/List.model";
+import { ListModel } from "@activitytracker/common/src/api/models/List.model";
 
 const { controllerWrapper, respondWithErr, respondWithUnexpectedErr } = ControllerUtils;
 
@@ -21,7 +21,7 @@ export const CreateListController: RouteController<CreateListRequest.Request, IA
             return respondWithErr(CreateListErrors.Errors.InvalidInputType({ field: inputErr.field, errMsg: inputErr.msg }), res);
         }
 
-        const listObj: Pick<IList, "creatorId" | "name" | "users"> = {
+        const listObj: Pick<ListModel.List, "creatorId" | "name" | "users"> = {
             creatorId: userId?.toString(),
             name: req.body.listName,
             users: [userId]
@@ -55,7 +55,7 @@ export const GetListController: RouteController<GetListRequest.Request, IAuthJWT
     controllerWrapper(res, async () => {
         const userId = res.locals.user?.id;
 
-        db.List.findById(req.params.listId, async (err: CallbackError, list: FoundDoc<IListModel>) => {
+        db.List.findById(req.params.listId, async (err: CallbackError, list: FoundDoc<ListModel.Document>) => {
             if (err) {
                 return respondWithUnexpectedErr(res, "Error getting list from db");
             } else if (!list) {
@@ -70,7 +70,7 @@ export const GetListController: RouteController<GetListRequest.Request, IAuthJWT
             }
 
             // populate user and activity fields for List
-            const populatedList = await list.populateList();
+            const populatedList = await list.populateAllFields();
 
             if (!populatedList) {
                 return respondWithUnexpectedErr(res, "Error populating list data");
@@ -105,7 +105,7 @@ export const AddActivityToListController: RouteController<AddActivityToListReque
     }
 
     // get list of users for give list to verify that current user is a member of the list
-    db.List.findById(listId, async (err: CallbackError, list: FoundDoc<IListModel>) => {
+    db.List.findById(listId, async (err: CallbackError, list: FoundDoc<ListModel.Document>) => {
         if (err) {
             return respondWithUnexpectedErr(res);
         } else if (!list) {

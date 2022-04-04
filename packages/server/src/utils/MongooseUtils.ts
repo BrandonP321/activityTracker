@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { TObjectId } from "@activitytracker/common/src/api/models";
 
-export type MongooseObjectId = mongoose.Types.ObjectId;
 
 export type FoundDoc<Doc extends {}> = null | Doc;
 
-export type PopulatedDoc<PopulatedType> = PopulatedType | MongooseObjectId;
+export type PopulatedDoc<PopulatedType> = PopulatedType | TObjectId;
 
 export type DBUpdateDoc = {
     acknowledged: boolean;
@@ -15,7 +15,7 @@ export type DBUpdateDoc = {
 }
 
 export class MongooseUtils {
-    public static mongooseIdToString(id: MongooseObjectId) {
+    public static mongooseIdToString(id: TObjectId) {
         try {
             return id.toString();
         } catch (err) {
@@ -23,7 +23,7 @@ export class MongooseUtils {
         }
     }
 
-    public static idStringToMongooseId(id: string | undefined) {
+    public static idStringToMongooseId(id: string | undefined): TObjectId | undefined {
         if (!id) {
             return undefined;
         }

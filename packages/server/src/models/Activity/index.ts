@@ -1,11 +1,11 @@
 import mongoose, { NativeError, Schema as ISchema } from "mongoose";
 import bcrypt from "bcrypt";
-import type { IActivityDocument, IActivityMethods, IActivityModel } from "@activitytracker/common/src/api/models/Activity.model";
+import type { ActivityModel } from "@activitytracker/common/src/api/models/Activity.model";
 import { toActivityJSON } from "./activityMethods";
 
 const { Schema } = mongoose;
 
-const ActivitySchema: ISchema<IActivityDocument, IActivityModel, IActivityDocument> = new Schema({
+const ActivitySchema = new Schema<ActivityModel.Activity, ActivityModel.Model, ActivityModel.InstanceMethods, ActivityModel.QueryHelpers>({
     name: {
         type: String,
         required: [true, "Activity name required"],
@@ -57,20 +57,15 @@ const ActivitySchema: ISchema<IActivityDocument, IActivityModel, IActivityDocume
 
 // PLUGINS
 
-
 // MIDDLEWARE
 
-// ActivitySchema.pre("save", async function save(next) {
-// });
-
-/* handles any errors when new Activity document can't be created */
-// ActivitySchema.post("save", handleUserDocSaveErr);
-
-const activityMethods: typeof ActivitySchema.methods & IActivityMethods = {
-    ...ActivitySchema.methods,
+const activityMethods: Required<ActivityModel.InstanceMethods> = {
     toActivityJSON
 }
 
-ActivitySchema.methods = activityMethods;
+ActivitySchema.methods = {
+    ...ActivitySchema.methods,
+    ...activityMethods
+};
 
-export const Activity = mongoose.model<IActivityDocument, IActivityModel>("Activity", ActivitySchema)
+export const Activity = mongoose.model<ActivityModel.Activity, ActivityModel.Model>("Activity", ActivitySchema)

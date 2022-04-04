@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { UserRoutes } from "../../routes";
-import { APIRequest, APIRequestResponse, ProtectedAPIRequest, ProtectedRouteErrors } from "..";
+import { APIRequest } from "..";
 import { APIUtils } from "../../../utils/APIUtils";
-import { GetUserDashDataRequest, GetUserRequest } from "./userRequests.types";
+import { GetUserDashDataRequest, GetUserListsRequest, GetUserRequest } from "./userRequests.types";
 
 const APIDomain = APIUtils.getApiDomain();
 
@@ -12,6 +12,10 @@ export const GetUser: APIRequest<GetUserRequest.Request> = (urlParams, bodyParam
 
 export const GetUserDashData: APIRequest<GetUserDashDataRequest.Request> = (urlParams, bodyParams, headers) => {
     return axios.get(`${APIDomain}${UserRoutes.GetUserDashData(urlParams)}`, {withCredentials: true})
+}
+
+export const GetUserLists: APIRequest<GetUserListsRequest.Request> = (urlParams, bodyParams, headers) => {
+    return axios.get(`${APIDomain}${UserRoutes.GetUserLists(urlParams)}`, {withCredentials: true})
 }
 
 // export const SearchForUser: APIRequest<UserSearchRequest> = (urlParams, bodyParams, headers) => {

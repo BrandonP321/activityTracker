@@ -1,48 +1,47 @@
-import { IPopulatedUserActivitiesModel, IPopulatedUserListsModel, IPopulatedUserModel, IUserDocument, IUserFullResponse, IUserModel, TGenerateAccessToken, TGenerateRefreshToken, TPopulateUserActivities, TPopulateUserLists, TToFullUserJSON, TToPopulatedUserJSON, TToShallowUserJSON, TValidatePassword } from "@activitytracker/common/src/api/models/User.model";
+import { UserModel } from "@activitytracker/common/src/api/models/User.model";
 import { RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import bcrypt from "bcrypt";
 import { ValidErrRes } from "~Utils/ControllerUtils";
 import { JWTUtils } from "~Utils/JWTUtils";
 import mongoose from "mongoose";
-import { IActivityModel } from "@activitytracker/common/src/api/models/Activity.model";
-import { MongooseObjectId } from "~Utils/MongooseUtils";
-import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils";
-import { MasterConfig } from "@activitytracker/common/src/config";
+import { DocUtils } from "~Utils/DocUtils";
 
 /**
  * INSTANCE METHODS
  */
 
-export const validatePassword: TValidatePassword = async function(this: IUserModel, pass: string) {
+const validatePassword: UserModel.InstanceMethods["validatePassword"] = async function(this: UserModel.Document, pass: string) {
     return bcrypt.compare(pass, this.password);
 }
 
-export const generateAccessToken: TGenerateAccessToken = function(this: IUserModel, hash: string) {
+const generateAccessToken: UserModel.InstanceMethods["generateAccessToken"] = function(this: UserModel.Document, hash: string) {
     const token = JWTUtils.signAccessToken(this._id.toString(), hash);
 
     return token;
 }
 
-export const generateRefreshToken: TGenerateRefreshToken = function(this: IUserModel, hash) {
+const generateRefreshToken: UserModel.InstanceMethods["generateRefreshToken"] = function(this: UserModel.Document, hash) {
     const token = JWTUtils.signRefreshToken(this._id.toString(), hash);
 
     return token;
 }
 
 /* converts user response to a shallow response with only basic user info */
-export const toShallowUserJSON: TToShallowUserJSON = async function(this: IUserModel) {
+const toShallowUserJSON: UserModel.InstanceMethods["toShallowUserJSON"] = async function(this: UserModel.Document) {
     return {
         id: this._id.toString(),
         email: this.email,
         username: this.username,
         createdAt: this.createdAt,
-        updatedAt: this.updatedAt
+        updatedAt: this.updatedAt,
+        profileImg: this.profileImg,
+        fullName: this.fullName
     }
 }
 
-export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) {
-    const userJSON: IUserFullResponse = {
-        id: this._id.toString(),
+const toFullUserJSON: UserModel.InstanceMethods["toFullUserJSON"] = async function(this: UserModel.Document) {
+    const userJSON: UserModel.FullResponseJSON = {
+        id: this.id,
         email: this.email,
         username: this.username,
         fullName: this.fullName,
@@ -52,7 +51,7 @@ export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) 
         savedActivities: this.savedActivities ?? [],
         lists: this.lists ?? [],
         createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
+        updatedAt: this.updatedAt,    
     }
 
     return userJSON;
@@ -60,7 +59,7 @@ export const toFullUserJSON: TToFullUserJSON = async function(this: IUserModel) 
 
 export type IUserDocSaveErr = ValidErrRes<RegisterUserRequest.ErrResponse["response"]["data"]> | undefined
 
-export const handleUserDocSaveErr = async function(err: { code?: number; [key: string]: any } & Error, doc: IUserDocument, next: (err: any) => void) {
+export const handleUserDocSaveErr = async function(err: { code?: number; [key: string]: any } & Error, doc: UserModel.Document, next: (err: any) => void) {
     let errObj: IUserDocSaveErr = undefined;
 
     if (err.code && err.code === 11000 && err.keyValue) {
@@ -106,51 +105,25 @@ export const handleUserDocSaveErr = async function(err: { code?: number; [key: s
     next(errObj)
 }
 
-export const populateUserActivities: TPopulateUserActivities = async function(this: IUserModel) {
-    try {
-        const populated: IPopulatedUserActivitiesModel = await this.populate(["userActivities", "savedActivities"]);
-
-        return populated ?? [];
-    } catch(err) {
-        console.log(err);
-        return undefined
-    }
+const populateActivities: UserModel.InstanceMethods["populateActivities"] = async function(this: UserModel.Document) {
+    return await DocUtils.populateField<UserModel.AllActivitiesPopulatedDoc>(this, ["userActivities", "savedActivities"]);
 }
 
-export const populateUserLists: TPopulateUserLists = async function(this: IUserModel) {
-    try {
-        const populated: IPopulatedUserListsModel = await this.populate("lists");
-
-        return populated ?? [];
-    } catch(err) {
-        console.log(err);
-        return undefined
-    }
+const populateUserLists: UserModel.InstanceMethods["populateUserLists"] = async function(this: UserModel.Document) {
+    return await DocUtils.populateField<UserModel.ListsPopulatedDoc>(this, "lists");
 }
 
-export const toPopulatedUserJSON: TToPopulatedUserJSON = async function(this: IUserModel, maxListLength?: number) {
-    try {
-        const populated: IPopulatedUserModel = await this.populate(["userActivities", "savedActivities", "lists"]);
-
-        const populatedUserJSON = populated.toFullUserJSON();
-
-        return populatedUserJSON;
-    } catch (err) {
-        console.error(err);
-        return undefined;
-    }
+const populateAllFields: UserModel.InstanceMethods["populateAllFields"] = async function(this: UserModel.Document) {
+    return await DocUtils.populateField<UserModel.AllPopulatedDoc>(this, ["userActivities", "lists", "savedActivities"])
 }
 
-/**
- * STATIC METHODS
- */
-
-
-/**
- * QUERY HELPERS
- */
-
-
-// export const findUserById = function(this: Query<any, IUserDocument, {}, IUserDocument>, id: mongoose.ObjectId) {
-//     return this.findById(id);
-// }
+export const userMethods: Required<UserModel.InstanceMethods> = {
+    validatePassword,
+    generateAccessToken,
+    generateRefreshToken,
+    toShallowUserJSON,
+    toFullUserJSON,
+    populateActivities,
+    populateUserLists,
+    populateAllFields,
+}

@@ -1,8 +1,7 @@
 import { APIErrResponse } from "..";
-import { IBaseModelProperties } from "../../models";
-import { IActivityFullResponse } from "../../models/Activity.model";
-import { IList, IListFullResponse, IPopulatedListFullResponse } from "../../models/List.model";
-import { IUserShallowResponse } from "../../models/User.model";
+import { ActivityModel } from "../../models/Activity.model";
+import { ListModel } from "../../models/List.model";
+import { UserModel } from "../../models/User.model";
 import { AddActivityToListErrors, CreateListErrors, GetListErrors } from "./listRequests.errors";
 
 export namespace CreateListRequest {
@@ -55,9 +54,7 @@ export namespace GetListRequest {
         }
         ReqBody: {
         }
-        ResBody: Omit<IPopulatedListFullResponse, "activities" | "users"> & {
-            activities: IActivityFullResponse[];
-            users: IUserShallowResponse[];
+        ResBody: ListModel.AllPopulatedFullResponseJSON & {
         }
         headers: {
             

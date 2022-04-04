@@ -2,7 +2,7 @@ import { ControllerUtils } from "~Utils/ControllerUtils";
 import { LoginUserErrors, LoginUserRequest, RegisterUserErrors, RegisterUserRequest } from "@activitytracker/common/src/api/requests/auth";
 import db from "~Models"
 import mongoose, { CallbackError, NativeError } from "mongoose";
-import { IUser, IUserDocument } from "@activitytracker/common/src/api/models/User.model";
+import { UserModel } from "@activitytracker/common/src/api/models/User.model";
 import { RouteController } from "./index";
 import bcrypt from "bcrypt";
 import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
@@ -30,7 +30,7 @@ export const RegisterUserController: RouteController<RegisterUserRequest.Request
         // hash that will be used to enforce that a refresh token is only used once
         const newTokenHash = await generateRandomHash();
     
-        const user: Partial<IUser> = {
+        const user: Partial<UserModel.User> = {
             ...req.body,
             jwtHash: { [newTokenHash]: true }
         }
@@ -69,7 +69,7 @@ export const LoginUserController: RouteController<LoginUserRequest.Request, {}> 
         const newTokenHash = await generateRandomHash();
 
     
-        db.User.findOne({ email }, async (err: NativeError, user: IUserDocument | null) => {
+        db.User.findOne({ email }, async (err: NativeError, user: UserModel.Document | null) => {
             if (err) {
                 console.log(err);
                 // status 500 if any error occurred while finding the user's collection, not including if it wasn't found

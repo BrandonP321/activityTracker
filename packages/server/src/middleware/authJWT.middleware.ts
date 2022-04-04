@@ -5,17 +5,15 @@ import mongoose, { NativeError } from "mongoose";
 import { ControllerUtils, MongooseUtils } from "~Utils";
 import bcrypt from "bcrypt";
 import db from "~Models";
-import { IUserDocument } from "@activitytracker/common/src/api/models/User.model";
+import { UserModel } from "@activitytracker/common/src/api/models/User.model";
 import { BaseRequestErrors } from "@activitytracker/common/src/api/requests";
-import { ConfigUtils } from "@activitytracker/common/src/utils/ConfigUtils";
-import { MasterConfig } from "@activitytracker/common/src/config";
 import { EnvUtils, ServerEnvVars } from "@activitytracker/common/src/utils/EnvUtils";
-import * as DateFns from "date-fns";
+import { TObjectId } from "@activitytracker/common/src/api/models";
 
 // other properties that will exist in Request object
 export interface IAuthJWTResLocals {
     user: {
-        id: mongoose.Types.ObjectId;
+        id: TObjectId;
     }
 }
 
@@ -61,11 +59,13 @@ export const haveUserReAuth = (res: Response) => ControllerUtils.respondWithErr(
 
 /* validate access token and refresh access and refresh tokens if valid */
 const verifyTokenHash = (aToken: IVerifiedTokenResponse, rToken: IVerifiedTokenResponse, req: Request, res: Response, next: NextFunction) => {
-    let id: mongoose.Types.ObjectId;
+    const id = MongooseUtils.idStringToMongooseId(aToken?.userId);
 
-    id = new mongoose.Types.ObjectId(aToken?.userId);
+    if (!id) {
+        return haveUserReAuth(res);
+    }
 
-    db.User.findById(id, (err: any, user: IUserDocument) => {
+    db.User.findById(id, (err: any, user: UserModel.Document) => {
         if (err || !user) {
             return haveUserReAuth(res);
         }
@@ -85,11 +85,11 @@ const verifyTokenHash = (aToken: IVerifiedTokenResponse, rToken: IVerifiedTokenR
 }
 
 /* generate new jwt's and void current refresh token */
-const refreshTokens = async (req: Request, res: Response, userId: mongoose.Types.ObjectId, oldHash: string, next: NextFunction) => {
+const refreshTokens = async (req: Request, res: Response, userId: TObjectId, oldHash: string, next: NextFunction) => {
     const tokenHash = await generateRandomHash();
 
     // find user and update jwt hash for user's document
-    db.User.findOne({ _id: userId }, async (err: NativeError, user: IUserDocument) => {
+    db.User.findOne({ _id: userId }, async (err: NativeError, user: UserModel.Document) => {
         if (err || !user) {
             return haveUserReAuth(res);
         }
@@ -115,7 +115,7 @@ const refreshTokens = async (req: Request, res: Response, userId: mongoose.Types
     })
 }
 
-export const createTokenCookies = (user: IUserDocument, hash: string, res: Response) => {
+export const createTokenCookies = (user: UserModel.Document, hash: string, res: Response) => {
     const accessToken = user.generateAccessToken(hash);
     const refreshToken = user.generateRefreshToken(hash);
 
